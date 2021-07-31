@@ -1,16 +1,19 @@
 {
-  "name": "b-joke",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-   "start": "node index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "eris": "^0.15.1",
-    "node-fetch": "^2.6.1"
-  }
+	"name": "b-joke",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start:server-dev": "node index.js",
+		"start": "npm run start:pm2",
+		"start:pm2": "pm2 start index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"eris": "^0.15.1",
+		"node-fetch": "^2.6.1",
+		"pm2": "^5.1.0"
+	}
 }
