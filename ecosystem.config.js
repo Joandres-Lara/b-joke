@@ -3,7 +3,7 @@ module.exports = {
   {
    name: "b-joke",
    script: "dist/index.js",
-   instances: "max",
+   instances: "1",
    watch: ".",
    env: {
     NODE_ENV: "development",
