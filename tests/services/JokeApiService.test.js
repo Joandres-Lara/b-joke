@@ -6,26 +6,34 @@ import { MESSAGE_CREATE } from "../../src/app/constants";
 
 jest.mock("../../src/app/JokeApi/JokeApi");
 
-test("Called `createMessage` on trigger `messageCreate`", () => {
+test("Called `createMessage` on trigger `messageCreate`", async () => {
+ new JokeApiService(new Eris()).init();
 
-	new JokeApiService(new Eris()).init();
+ expect(Eris.on).toHaveBeenCalledWith(MESSAGE_CREATE, expect.any(Function));
 
-	expect(Eris.on).toHaveBeenCalledWith(MESSAGE_CREATE, expect.any(Function));
+ Eris.dispatch(MESSAGE_CREATE, { content: "invalid-call" });
 
-	Eris.dispatch(MESSAGE_CREATE, { content: "invalid-call" });
+ expect(Eris.createMessage).not.toHaveBeenCalled();
 
-	expect(Eris.createMessage).not.toHaveBeenCalled();
-
-	const EXPECT_JOKE = "Jajajajajajajaja";
+ const EXPECT_JOKE = "Jajajajajajajaja";
  const EXPECT_ID_CHANNEL = 999999999;
 
-	Eris.dispatch(MESSAGE_CREATE, { content: "!joke", channel: { id: EXPECT_ID_CHANNEL } });
+ const promised = Promise.resolve(EXPECT_JOKE);
 
-	expect(JokeApi).toHaveBeenCalled();
-	expect(JokeApi.getJoke).toHaveBeenCalled();
+ JokeApi.getJoke.mockImplementation(() => promised);
 
+ Eris.dispatch(MESSAGE_CREATE, {
+  content: "!joke",
+  channel: { id: EXPECT_ID_CHANNEL },
+ });
 
-	JokeApi.callGetJoke(EXPECT_JOKE);
+ expect(JokeApi).toHaveBeenCalled();
+ expect(JokeApi.getJoke).toHaveBeenCalled();
 
-	expect(Eris.createMessage).toHaveBeenCalledWith(EXPECT_ID_CHANNEL, EXPECT_JOKE);
+ await promised;
+
+ expect(Eris.createMessage).toHaveBeenCalledWith(
+  EXPECT_ID_CHANNEL,
+  EXPECT_JOKE
+ );
 });

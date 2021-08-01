@@ -7,18 +7,18 @@ export default class JokeApi {
  constructor(options){
   this.options = options;
  }
+ /**
+  *
+  * @param {function<void>} cb
+  * @returns {Promise<string>}
+  */
+ getJoke = async (cb) => {
+  const response = await nodeFetch(JokeApi.URL_API);
+  const { joke } = await response.json();
 
- getJoke = (cb) => {
-  const request = nodeFetch(JokeApi.URL_API);
-  return request.then(response => {
-   return response.json()
-  })
-  .then((result) => {
-   const { joke } = result;
-   if(typeof cb === "function"){
-    cb(joke);
-   }
-  })
-  .catch(console.error)
+  if(typeof cb === "function"){
+   return cb(joke);
+  }
+  return joke;
  }
 }

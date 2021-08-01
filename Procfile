@@ -1,2 +1,1 @@
-worker: npm start
-web: exit 1
+web: npm start
