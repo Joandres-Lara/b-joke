@@ -1,6 +1,6 @@
-const nodeFetch = require("node-fetch");
+import nodeFetch from "node-fetch";
 
-class JokeApi {
+export default class JokeApi {
 
  static URL_API = "https://v2.jokeapi.dev/joke/Any?type=single";
 
@@ -9,7 +9,7 @@ class JokeApi {
  }
 
  getJoke = (cb) => {
-  const request = nodeFetch.default(JokeApi.URL_API);
+  const request = nodeFetch(JokeApi.URL_API);
   return request.then(response => {
    return response.json()
   })
@@ -22,5 +22,3 @@ class JokeApi {
   .catch(console.error)
  }
 }
-
-module.exports = JokeApi;
