@@ -1,6 +1,12 @@
-import JokeApiJobSchedule from "../cron-jobs/JokeApiJobSchedule";
+import JokeApiJobSchedule from "../jobs/JokeApiJobSchedule";
+import JokeMessage from "../app/JokeMessage";
 import JokeApi from "../app/JokeApi";
 import Storage from "../app/Storage/DefaultStorage"
+
+import {
+ JOKE_COMMAND,
+ JOKE_COMMAND_DESCRIPTION
+} from "./JokeApiService/descriptor-commands";
 
 export default class JokeApiService {
  /**
@@ -19,25 +25,21 @@ export default class JokeApiService {
   * @returns {void}
   */
  init = () => {
-  this.bot.registerCommand("joke", async (msg, args) => {
+  this.bot.registerCommand(JOKE_COMMAND, async (msg, args) => {
 
    const { id: channel_id } = msg.channel;
 
    if(args.length === 0){
     const joke = await(new JokeApi().getJoke());
-    return this.bot.createMessage(channel_id, joke);
+    const message = new JokeMessage(joke, { repliedUser: true, users: true });
+    return this.bot.createMessage(channel_id, message.toObject());
    }
 
    if(args.includes("subscribe")){
     this.storage.insert(new JokeApiJobSchedule(channel_id));
     return this.bot.createMessage(channel_id, "Te has suscrito, para que te envíemos, chiste diarios.");
    }
-  }, {
-   description: "A joke to make you laugh, type **!help joke** for mor options.",
-   fullDescription: `
-    Use **!joke** only for get a joke and make you **laugh**.
-    use **!joke subscribe**, for get all days to 9:00 am, a joke.
-   `
-  });
+
+  }, JOKE_COMMAND_DESCRIPTION);
  };
 }

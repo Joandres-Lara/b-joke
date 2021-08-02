@@ -1,6 +1,6 @@
 import DefaultStorage from "./app/Storage/DefaultStorage";
 import Services from "./services";
-import Jobs from "./cron-jobs/Jobs";
+import Jobs from "./jobs/Jobs";
 
 const PRODUCTION = "production";
 /**

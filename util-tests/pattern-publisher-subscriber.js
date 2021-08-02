@@ -1,14 +1,22 @@
 const defaultMaped = (cb) => cb;
 
+/**
+ * Crea un patrón publisher subscriber.
+ *
+ * @param {function} mapedRegister
+ * @param {function} mapedCall
+ * @returns {object}
+ */
 module.exports = (mapedRegister = defaultMaped, mapedCall = defaultMaped) => {
+
  const listeners = [];
 
- const register = jest.fn((...args) => listeners.push(mapedRegister(...args)));
+ const register = ((...args) => listeners.push(mapedRegister(...args)));
+
  register.listeners = listeners;
 
- const call = jest.fn((...args) =>
-  listeners.map(mapedCall).forEach((cb) => cb && cb(...args))
- );
+ const call = ((...args) => listeners.map(mapedCall).forEach((cb) => cb && cb(...args)));
+
  call.listeners = listeners;
 
  const callFilter = (filter, ...args) =>
@@ -16,6 +24,7 @@ module.exports = (mapedRegister = defaultMaped, mapedCall = defaultMaped) => {
    .filter(filter)
    .map(mapedCall)
    .forEach((cb) => cb && cb(...args));
+
  callFilter.listeners = listeners;
 
  return {

@@ -1,16 +1,23 @@
 import JokeApiJobSchedule from "./JokeApiJobSchedule";
+import JokeMessageDaily from "../app/JokeMessageDaily";
 import JokeApi from "../app/JokeApi";
 import Storage from "../app/Storage/DefaultStorage";
 
-import cron from "node-cron";
+import schedule from "node-schedule";
 
 // https://www.digitalocean.com/community/tutorials/nodejs-cron-jobs-by-examples
 export default class JokeApiJob{
  /**
   *
-  * @var {string} SCHEDULE_TIMER
+  * @var {RecurrenceRule} SCHEDULE_TIMER
   */
- static SCHEDULE_TIMER = "* * 9 * * *";
+ static SCHEDULE_TIMER = (() => {
+  const config = new schedule.RecurrenceRule();
+  config.hour = 9;
+  config.minute = 0;
+  config.tz = "America/Mexico_City";
+  return config;
+ })();
  /**
   *
   * @param {Eris.Client} bot
@@ -27,17 +34,18 @@ export default class JokeApiJob{
   * @returns {void}
   */
  init = () => {
-  this.initCronJobs();
+  this.initJobs();
  }
  /**
   *
   * @returns {void}
   */
- initCronJobs = () => {
+ initJobs = () => {
   this.schedule(JokeApiJob.SCHEDULE_TIMER, async () => {
    const joke = await (new JokeApi().getJoke());
    this.getAllJobs().forEach(({ channel_id }) => {
-    this.bot.createMessage(channel_id, `This is the joke select of the day: ${joke}`);
+    const message = new JokeMessageDaily(joke);
+    this.bot.createMessage(channel_id, message.toObject());
    });
   });
  }
@@ -64,6 +72,8 @@ export default class JokeApiJob{
   * @returns {void}
   */
  schedule = (cronExpression, cb) => {
-  cron.schedule(cronExpression, cb);
+  // NOTE: Esta implementación podría cambiar
+  // ver docs/SCHEDULE_UPGRADE.md para más información.
+  schedule.scheduleJob(cronExpression, cb);
  }
 }

@@ -1,11 +1,13 @@
 const { call, register } = require("../../../../util-tests/pattern-publisher-subscriber")();
 
+const mockRegister = jest.fn(register);
+
 const mocked = jest.fn(() => {
 	return {
-		getJoke: register
+		getJoke: mockRegister
 	}
 });
 
-mocked.getJoke = register;
-mocked.callGetJoke = call;
+mocked.getJoke = mockRegister;
+mocked.callGetJoke = jest.fn(call);
 module.exports = mocked;

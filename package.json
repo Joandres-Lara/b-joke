@@ -9,7 +9,8 @@
     "start:dev": "npx babel-node src/index.js",
     "start": "npm run start:pm2",
     "start:pm2": "pm2-runtime start ecosystem.config.js --env production",
-    "test": "jest"
+    "test": "jest",
+    "test:ci": "jest --ci --runInBand"
   },
   "engines": {
     "node": ">= 14.17.0",
@@ -26,13 +27,14 @@
     "@babel/preset-env": "^7.14.8",
     "eris": "^0.15.1",
     "express": "^4.17.1",
-    "node-cron": "^3.0.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "node-schedule": "^2.0.0"
   },
   "devDependencies": {
     "@babel/node": "^7.14.7",
     "jest": "^27.0.6",
     "jest-cli": "^27.0.6",
+    "jest-date-mock": "^1.0.8",
     "supertest": "^6.1.4"
   }
 }
