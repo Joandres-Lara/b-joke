@@ -1,6 +1,6 @@
 import DefaultStorage from "./app/Storage/DefaultStorage";
 import Services from "./services";
-// import Jobs from "./cron-jobs/Jobs";
+import Jobs from "./cron-jobs/Jobs";
 
 const PRODUCTION = "production";
 /**
@@ -25,7 +25,7 @@ export default function app(bot, appExpress){
 
  if(activeJobs) {
   console.log("Jobs active");
-  // Jobs.configure(bot, appExpress, storage);
+  Jobs.configure(bot, appExpress, storage);
  }
 
  if(activeServices) {
