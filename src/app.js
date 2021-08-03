@@ -1,4 +1,4 @@
-import DefaultStorage from "./app/Storage/DefaultStorage";
+import PostgresStorageJobs from "./app/StorageJobs/PostgresStorageJobs";
 import Services from "./services";
 import Jobs from "./jobs/Jobs";
 
@@ -8,8 +8,9 @@ const PRODUCTION = "production";
 	*
 	* @param {*} bot
 	*/
-export default function app(bot, appExpress){
- const storage = new DefaultStorage();
+export default async function app(bot, appExpress){
+ const storageJobs = new PostgresStorageJobs();
+ await storageJobs.init();
  const env = process.env.NODE_ENV;
 
  let activeJobs = false;
@@ -25,11 +26,11 @@ export default function app(bot, appExpress){
 
  if(activeJobs) {
   console.log("Jobs active");
-  Jobs.configure(bot, appExpress, storage);
+  Jobs.configure(bot, appExpress, storageJobs);
  }
 
  if(activeServices) {
   console.log("Services active");
-  Services.configure(bot, appExpress, storage);
+  Services.configure(bot, appExpress, storageJobs);
  }
 }

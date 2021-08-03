@@ -1,7 +1,7 @@
 import JokeApiJobSchedule from "../jobs/JokeApiJobSchedule";
 import JokeMessage from "../app/JokeMessage";
 import JokeApi from "../app/JokeApi";
-import Storage from "../app/Storage/DefaultStorage"
+import Storage from "../app/StorageJobs/DefaultStorageJobs"
 
 import {
  JOKE_COMMAND,

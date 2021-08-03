@@ -5,6 +5,6 @@ export default class JokeApiJobSchedule{
  constructor(channel_id, config){
   this.channel_id = channel_id;
   this.config = config;
-  this.jobType = JokeApiJobSchedule.TYPE;
+  this.job_type = JokeApiJobSchedule.TYPE;
  }
 }

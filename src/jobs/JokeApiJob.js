@@ -1,7 +1,7 @@
 import JokeApiJobSchedule from "./JokeApiJobSchedule";
 import JokeMessageDaily from "../app/JokeMessageDaily";
 import JokeApi from "../app/JokeApi";
-import Storage from "../app/Storage/DefaultStorage";
+import Storage from "../app/StorageJobs/DefaultStorageJobs";
 
 import schedule from "node-schedule";
 
@@ -43,10 +43,27 @@ export default class JokeApiJob{
  initJobs = () => {
   this.schedule(JokeApiJob.SCHEDULE_TIMER, async () => {
    const joke = await (new JokeApi().getJoke());
-   this.getAllJobs().forEach(({ channel_id }) => {
-    const message = new JokeMessageDaily(joke);
-    this.bot.createMessage(channel_id, message.toObject());
-   });
+   let jobs = this.getAllJobs();
+
+   const eachJobs = () => {
+    jobs.forEach(({ channel_id }) => {
+     const message = new JokeMessageDaily(joke);
+     this.bot.createMessage(channel_id, message.toObject());
+    });
+   }
+
+   if(this.storage.isAsync()){
+    return (async() => {
+     try{
+      jobs = await jobs;
+      eachJobs();
+     } catch(e){
+      console.error(e);
+     }
+    })()
+   }
+
+   eachJobs();
   });
  }
  /**
@@ -54,7 +71,7 @@ export default class JokeApiJob{
   * @returns {Array}
   */
  getAllJobs = () => {
-  return this.storage.findAll({ jobType: JokeApiJobSchedule.TYPE });
+  return this.storage.findAll({ job_type: JokeApiJobSchedule.TYPE });
  }
  /**
   *
@@ -63,7 +80,24 @@ export default class JokeApiJob{
   * @returns {void}
   */
  subscribe = (channel_id, config) => {
-  this.storage.insert(new JokeApiJobSchedule(channel_id, config));
+  const find = () => this.storage.find({ job_type: JokeApiJobSchedule.TYPE, channel_id });
+  const insert = () => this.storage.insert(new JokeApiJobSchedule(channel_id, config));
+
+  if(this.storage.isAsync()){
+   return (async () => {
+    try{
+     if(!(await find())){
+      return await insert();
+     }
+    }catch(e){
+     console.error(e);
+    }
+   })();
+  }
+
+  if(!find()){
+   return insert();
+  }
  }
  /**
   *
