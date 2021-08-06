@@ -1,4 +1,5 @@
 import JokeApiService from "./JokeApiService";
+import NewsApiService from "./NewsApiService";
 
 export default class Services {
  /**
@@ -16,7 +17,10 @@ export default class Services {
   * @param {*} bot
   */
  constructor(...args) {
-  this.services.push(new JokeApiService(...args));
+  this.services.push(
+   new JokeApiService(...args),
+   new NewsApiService(...args)
+  );
  }
 
  init = () => this.services.forEach((service) => service.init());

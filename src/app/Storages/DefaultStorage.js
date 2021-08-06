@@ -1,4 +1,4 @@
-export default class DefaultStorageJobs{
+export default class DefaultStorage{
  /**
   *
   * @param {object} internalConfig
@@ -6,11 +6,16 @@ export default class DefaultStorageJobs{
   * @returns
   */
  static shallowEqual = (internalConfig, config) => {
+  if(internalConfig === config){
+   return true;
+  }
+
   for(let key in config){
-   if(internalConfig[key] !== config[key]){
+   if(internalConfig[key] !== config[key] && JSON.stringify(internalConfig[key]) !== JSON.stringify(config[key])){
     return false;
    }
   }
+
   return true;
  }
  /**
@@ -34,22 +39,30 @@ export default class DefaultStorageJobs{
   * @param {object} config
   * @returns {Array}
   */
- findAll = (config) => {
-  return this.arr.filter((_) => DefaultStorageJobs.shallowEqual(_, config));
+ findAll(config){
+  return this.arr.filter((_) => DefaultStorage.shallowEqual(_, config));
  }
  /**
   * Encuentra el primer element que coincide con todos los elementos del objeto en `config`.
   *
   * @param {*} config
   */
- find = (config) => {
-  return this.arr.find(_ => DefaultStorageJobs.shallowEqual(_, config))
+ find(config){
+  return this.arr.find(_ => DefaultStorage.shallowEqual(_, config))
  }
  /**
   *
   * @returns {object}
   */
- insert = (values) => {
+ insert(values){
   return this.arr.push(values);
+ }
+ /**
+  *
+  */
+ insertIfNotFind(values){
+  if(!this.find(values)){
+   return this.insert(values);
+  }
  }
 }

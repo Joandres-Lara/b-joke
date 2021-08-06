@@ -1,5 +1,11 @@
-TODO: [] Agregar una base de datos para los guild de los servidores,
+TODO: [x] Agregar una base de datos para los guild de los servidores,
 a los que se va a conectar el BOT, con el cron-job, y enviarle los chistes.
 
 TODO: [] Conexión con un RSS, para las noticias, ej. quizás hacer una petición cada hora,
 para obtener las noticias más importantes.
+
+TODO: [] Múltiples conexiones para RSS.
+
+TODO: [] Puppeter para hacer un scraper de la página de http://chistes.com
+
+TODO: [] Conexión con Spotify, para crear listas de reproducción.

@@ -1,4 +1,4 @@
-import PostgresStorageJobs from "../../../src/app/StorageJobs/PostgresStorageJobs";
+import PostgresStorageJobs from "../../../../src/app/Storages/StorageJobs/PostgresStorageJobs";
 
 let instance;
 

@@ -1,3 +1,4 @@
+import DefaultStorage from "../../src/app/Storages/DefaultStorage";
 import JokeApiService from "../../src/services/JokeApiService";
 import JokeApi from "../../src/app/JokeApi";
 import Eris from "eris";
@@ -10,7 +11,7 @@ import {
 jest.mock("../../src/app/JokeApi/JokeApi");
 
 test("Called `JokeApi().getJoke()` when `args.length` is 0", async () => {
- new JokeApiService(new Eris.CommandClient()).init();
+ new JokeApiService(new Eris.CommandClient(), null, { get: () => new DefaultStorage()}).init();
 
  expect(Eris.CommandClient.registerCommand).toHaveBeenCalledWith(
   JOKE_COMMAND,

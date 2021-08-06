@@ -2,14 +2,14 @@ import JokeApiJobSchedule from "../../src/jobs/JokeApiJobSchedule";
 import JokeApiJob from "../../src/jobs/JokeApiJob";
 import JokeApi from "../../src/app/JokeApi";
 
-import DefaultStorageJobs from "../../src/app/Storagejobs/DefaultStorageJobs";
+import DefaultStorageJobs from "../../src/app/Storages/DefaultStorage";
 
 import schedule from "node-schedule";
 import Eris from "eris";
 
 jest.mock("../../src/app/JokeApi/JokeApi");
 
-let instance, todoStorage, mockInsertStorage, mockFindAll, mockFind;
+let instance, todoStorage, mockInsertStorage, mockFindAll, mockFind, mockInsertIfNotFind;
 
 beforeEach(() => {
  const instanceStorage = new DefaultStorageJobs();
@@ -24,7 +24,7 @@ beforeEach(() => {
  mockFindAll = instanceStorage.findAll;
  mockFind = instanceStorage.find;
 
- instance = new JokeApiJob(new Eris.CommandClient(), null, instanceStorage);
+ instance = new JokeApiJob(new Eris.CommandClient(), null, { get: () => instanceStorage });
 });
 
 test("Insert to storage `JokeApiJobSchedule`", () => {
@@ -36,10 +36,7 @@ test("Insert to storage `JokeApiJobSchedule`", () => {
  instance.subscribe(EXPECT_CHANNEL_ID, EXPECT_CONFIG);
 
  expect(mockFind).toHaveBeenCalledTimes(1);
- expect(mockFind).toHaveBeenCalledWith({
-  job_type: JokeApiJobSchedule.TYPE,
-  channel_id: EXPECT_CHANNEL_ID,
- });
+ expect(mockFind).toHaveBeenCalledWith(new JokeApiJobSchedule(EXPECT_CHANNEL_ID, EXPECT_CONFIG));
  expect(mockFind).toHaveLastReturnedWith(undefined);
 
  expect(mockInsertStorage).toHaveBeenCalledTimes(1);
@@ -72,10 +69,7 @@ test("Insert to storage `JokeApiJobSchedule` if not find", () => {
  instance.subscribe(CHANNEL_ID_IN_STORAGE, EXPECT_CONFIG);
 
  expect(mockFind).toHaveBeenCalledTimes(1);
- expect(mockFind).toHaveBeenCalledWith({
-  job_type: JokeApiJobSchedule.TYPE,
-  channel_id: CHANNEL_ID_IN_STORAGE,
- });
+ expect(mockFind).toHaveBeenCalledWith(instanceInStorage);
  expect(mockFind).toHaveLastReturnedWith(instanceInStorage);
 
  expect(mockInsertStorage).not.toHaveBeenCalled();
@@ -85,10 +79,7 @@ test("Insert to storage `JokeApiJobSchedule` if not find", () => {
  instance.subscribe(EXPECT_CHANNEL_ID, EXPECT_CONFIG);
 
  expect(mockFind).toHaveBeenCalledTimes(2);
- expect(mockFind).toHaveBeenCalledWith({
-  job_type: JokeApiJobSchedule.TYPE,
-  channel_id: EXPECT_CHANNEL_ID,
- });
+ expect(mockFind).toHaveBeenCalledWith(instanceInStorage);
  expect(mockFind).toHaveLastReturnedWith(undefined);
 
  expect(mockInsertStorage).toHaveBeenCalledTimes(1);
@@ -154,53 +145,26 @@ test("Initialize cron jobs and called when matched with time", async () => {
 });
 
 describe("Use async StorageJobs", () => {
- let
-  promisedInsert,
-  promisedFind,
-  promisedFindAll;
 
  beforeEach(() => {
   const instanceStorage = new DefaultStorageJobs();
 
   todoStorage = instanceStorage.arr;
 
-  const originalInsert = instanceStorage.insert;
-  const originalFind = instanceStorage.find;
-  const originalFindAll = instanceStorage.findAll;
-
   jest.spyOn(instanceStorage, "insert");
   jest.spyOn(instanceStorage, "find");
   jest.spyOn(instanceStorage, "findAll");
   jest.spyOn(instanceStorage, "isAsync");
+  jest.spyOn(instanceStorage, "insertIfNotFind");
 
   instanceStorage.isAsync.mockReturnValue(true);
 
-  instanceStorage.insert.mockImplementation(async (...args) => {
-   promisedInsert = await Promise.resolve(
-    originalInsert.apply(instanceStorage, args)
-   );
-   return promisedInsert;
-  });
-
-  instanceStorage.find.mockImplementation(async (...args) => {
-   promisedFind = await Promise.resolve(
-    originalFind.apply(instanceStorage, args)
-   );
-   return promisedFind;
-  });
-
-  instanceStorage.findAll.mockImplementation(async (...args) => {
-   promisedFindAll = await Promise.resolve(
-    originalFindAll.apply(instanceStorage, args)
-   );
-   return promisedFindAll;
-  });
-
+  mockInsertIfNotFind = instanceStorage.insertIfNotFind;
   mockInsertStorage = instanceStorage.insert;
   mockFindAll = instanceStorage.findAll;
   mockFind = instanceStorage.find;
 
-  instance = new JokeApiJob(new Eris.CommandClient(), null, instanceStorage);
+  instance = new JokeApiJob(new Eris.CommandClient(), null, {get: () => instanceStorage});
  });
 
  test("Insert to storage `JokeApiJobSchedule`", async () => {
@@ -211,15 +175,8 @@ describe("Use async StorageJobs", () => {
 
   instance.subscribe(EXPECT_CHANNEL_ID, EXPECT_CONFIG);
 
-  await Promise.all([promisedFind, promisedInsert]);
-
   expect(mockFind).toHaveBeenCalledTimes(1);
-  expect(mockFind).toHaveBeenCalledWith({
-   job_type: JokeApiJobSchedule.TYPE,
-   channel_id: EXPECT_CHANNEL_ID,
-  });
-
-  await expect(promisedFind).toBeUndefined();
+  expect(mockFind).toHaveBeenCalledWith(new JokeApiJobSchedule(EXPECT_CHANNEL_ID, EXPECT_CONFIG));
 
   expect(mockInsertStorage).toHaveBeenCalledTimes(1);
   expect(mockInsertStorage).toHaveBeenCalledWith({
@@ -250,33 +207,17 @@ describe("Use async StorageJobs", () => {
 
   instance.subscribe(CHANNEL_ID_IN_STORAGE, EXPECT_CONFIG);
 
-  await Promise.all([promisedFind]);
-
   expect(mockFind).toHaveBeenCalledTimes(1);
-  expect(mockFind).toHaveBeenCalledWith({
-   job_type: JokeApiJobSchedule.TYPE,
-   channel_id: CHANNEL_ID_IN_STORAGE,
-  });
-
-  await expect(promisedFind).toEqual(instanceInStorage);
+  expect(mockFind).toHaveBeenCalledWith(instanceInStorage);
 
   expect(mockInsertStorage).not.toHaveBeenCalled();
 
   expect(todoStorage).toHaveLength(1);
 
-  promisedFind = void 0;
-
   instance.subscribe(EXPECT_CHANNEL_ID, EXPECT_CONFIG);
 
   expect(mockFind).toHaveBeenCalledTimes(2);
-  expect(mockFind).toHaveBeenCalledWith({
-   job_type: JokeApiJobSchedule.TYPE,
-   channel_id: EXPECT_CHANNEL_ID,
-  });
-
-  await Promise.all([promisedFind]);
-
-  await expect(promisedFind).toBeUndefined();
+  expect(mockFind).toHaveBeenCalledWith(instanceInStorage);
 
   expect(mockInsertStorage).toHaveBeenCalledTimes(1);
   expect(mockInsertStorage).toHaveBeenCalledWith({

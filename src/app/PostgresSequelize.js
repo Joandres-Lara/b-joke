@@ -73,7 +73,7 @@ export default class PostgresSequelize{
    // La conexión y la obtención de la configuración
    // deberían estar aquí dentro.
    try {
-    const config = configs[process.env.NODE_ENV];
+    const config = configs[process.env.NODE_ENV || "development"];
     PostgresSequelize.instance = new Sequelize(config);
     await PostgresSequelize.instance.authenticate();
     console.log("Connection has been established successfully.");

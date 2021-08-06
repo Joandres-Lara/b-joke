@@ -1,7 +1,6 @@
 import JokeApiJobSchedule from "../jobs/JokeApiJobSchedule";
-import JokeMessage from "../app/JokeMessage";
+import JokeMessage from "../app/Messages/JokeMessage";
 import JokeApi from "../app/JokeApi";
-import Storage from "../app/StorageJobs/DefaultStorageJobs"
 
 import {
  JOKE_COMMAND,
@@ -13,12 +12,13 @@ export default class JokeApiService {
   *
   * @param {Eris.Client} bot
   * @param {Express.Application} appExpress
-  * @param {Storage}
+  * @param {StorageJobs}
   */
- constructor(bot, appExpress, storage) {
+ constructor(bot, appExpress, storageManager) {
   this.bot = bot;
   this.appExpress = appExpress;
-  this.storage = storage || new Storage();
+  this.storageJobs = storageManager.get("jobs");
+  this.api = new JokeApi();
  }
  /**
   *
@@ -26,17 +26,16 @@ export default class JokeApiService {
   */
  init = () => {
   this.bot.registerCommand(JOKE_COMMAND, async (msg, args) => {
-
    const { id: channel_id } = msg.channel;
 
    if(args.length === 0){
-    const joke = await(new JokeApi().getJoke());
+    const joke = await(this.api.getJoke());
     const message = new JokeMessage(joke, { repliedUser: true, users: true });
     return this.bot.createMessage(channel_id, message.toObject());
    }
 
    if(args.includes("subscribe")){
-    this.storage.insert(new JokeApiJobSchedule(channel_id));
+    this.storageJobs.insertIfNotFind(new JokeApiJobSchedule(channel_id));
     return this.bot.createMessage(channel_id, "Te has suscrito, para que te envíemos, chiste diarios.");
    }
 
