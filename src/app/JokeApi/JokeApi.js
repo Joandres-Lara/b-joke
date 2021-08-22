@@ -1,20 +1,31 @@
-import nodeFetch from "node-fetch";
+import JokeApiScrapperChistesDotCom from "./JokeApiScrapperChistesDotCom";
+import JokeApiJson from "./JokeApiJson";
 
 export default class JokeApi {
-
- static URL_API = "https://v2.jokeapi.dev/joke/Any?type=single";
-
- constructor(options){
-  this.options = options;
+ /**
+  *
+  * @param {*} options
+  */
+ constructor() {
+  this.joke_api_json = new JokeApiJson();
+  this.joke_api_scrapper_chistes_dot_com = new JokeApiScrapperChistesDotCom();
  }
  /**
   *
   * @param {function<void>} cb
   * @returns {Promise<string>}
   */
- getJoke = async (cb) => {
-  const response = await nodeFetch(JokeApi.URL_API);
-  const { joke } = await response.json();
+ getJoke = async (cb, api_type = "es") => {
+  let joke;
+  switch (api_type) {
+   case "en":
+    joke = await this.joke_api_json.getJoke();
+    break;
+   case "es":
+   default:
+    joke = await this.joke_api_scrapper_chistes_dot_com.getJoke();
+    break;
+  }
 
   if(typeof cb === "function"){
    return cb(joke);
