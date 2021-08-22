@@ -11,10 +11,6 @@ export default class NewsRSS{
  /**
   *
   */
- currentIndex = 0;
- /**
-  *
-  */
  lastObtain = new Date(0);
  /**
   *
@@ -36,7 +32,7 @@ export default class NewsRSS{
   * @returns {Array<NewsItem>}
   */
  async getNews(){
-  if(this.news.length === 0 && this.needGetAgain()){
+  if(this.needGetAgain()){
    this.lastObtain = new Date();
    this.news = await this.requestNews();
    this.validateNews();
@@ -45,6 +41,7 @@ export default class NewsRSS{
  }
  /**
   *
+  * @returns {void}
   */
  validateNews(){
   if(!Array.isArray(this.news)){
@@ -58,20 +55,5 @@ export default class NewsRSS{
  needGetAgain(){
   // Si ha pasado media hora desde la última actualización, vuelva a obtener los datos.
   return (this.lastObtain.getTime() + 1800000) < new Date().getTime();
- }
- /**
-  *
-  * @returns {NewsItem}
-  */
- async getNew(){
-  await this.getNews();
-  return this.news[this.currentIndex];
- }
- /**
-  *
-  */
- async next(){
-  this.currentIndex++;
-  return await this.getNew();
  }
 }
