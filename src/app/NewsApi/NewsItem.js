@@ -17,28 +17,28 @@ export default class NewsItem {
  }
 
  get id() {
-  if (this._id) return this._id;
-  throw new Error("Static property `id` is required");
+  if (this._id !== null && this._id !== undefined) return this._id;
+  throw new Error("Property `id` is required");
  }
 
  get title() {
   if (this._title) return this._title;
-  throw new Error("Static property `id` is required");
+  throw new Error("Property `title` is required");
  }
 
  get link() {
   if (this._link) return this._link;
-  throw new Error("Static property `link` is required");
+  throw new Error("Property `link` is required");
  }
 
  get image() {
   if (this._image) return this._image;
-  throw new Error("Static property `image` is required");
+  throw new Error("Property `image` is required");
  }
 
  get author() {
   if (this._author) return this._author;
-  throw new Error("Static property `author` is required");
+  throw new Error("Property `author` is required");
  }
 
  get description() {
@@ -47,16 +47,16 @@ export default class NewsItem {
 
  get content() {
   if (this._content) return this._content;
-  throw new Error("Static property `content` is required");
+  throw new Error("Property `content` is required");
  }
 
  get created_at() {
   if (this._created_at) return this._created_at;
-  throw new Error("Static property `created_at` is required");
+  throw new Error("Property `created_at` is required");
  }
 
  get rss() {
   if (this._rss) return this._rss;
-  throw new Error("Static property `rss` is required");
+  throw new Error("Property `rss` is required");
  }
 }

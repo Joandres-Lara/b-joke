@@ -22,7 +22,7 @@ export default class PostgresStorageJobs extends PostgresStorage {
  }
  /**
   *
-  * @returns {Promise<boolean>}
+  * @returns {Promise<boolean|Models.ChannelJob>}
   */
  async insertIfNotFind({ channel_id, job_type, config }) {
   if (!(await this.find({ job_type, channel_id }))) {

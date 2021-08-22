@@ -21,7 +21,7 @@ export default class JokeApiJob {
   *
   * @param {Eris.Client} bot
   * @param {Express.Application} appExpress
-  * @param {DefaultStorage}
+  * @param {StorageManager}
   */
  constructor(bot, appExpress, storageManager) {
   this.bot = bot;
@@ -90,8 +90,6 @@ export default class JokeApiJob {
   * @returns {void}
   */
  schedule = (cronExpression, cb) => {
-  // NOTE: Esta implementación podría cambiar
-  // ver docs/SCHEDULE_UPGRADE.md para más información.
   schedule.scheduleJob(cronExpression, cb);
  };
 }
