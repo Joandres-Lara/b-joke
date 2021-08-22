@@ -1,6 +1,6 @@
 import VoidNewsItemMessage from "../app/Messages/VoidNewsItemMessage";
 import NewsItemMessage from "../app/Messages/NewsItemMessage";
-import NewsApi from "../app/NewsApi";
+import NewsApi from "../app/NewsApi/NewsApi";
 import {
  NEWS_COMMAND,
  NEWS_COMMAND_DESCRIPTION

@@ -1,7 +1,7 @@
 import NewsApiService from "../../src/services/NewsApiService";
 import DefaultStorage from "../../src/app/Storages/DefaultStorage";
 import NewsItem from "../../src/app/NewsApi/NewsItem";
-import NewsApi from "../../src/app/NewsApi";
+import NewsApi from "../../src/app/NewsApi/NewsApi";
 import Eris from "eris";
 
 import {
