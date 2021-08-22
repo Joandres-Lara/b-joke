@@ -1,12 +1,13 @@
 import VoidNewsItemMessage from "../app/Messages/VoidNewsItemMessage";
 import NewsItemMessage from "../app/Messages/NewsItemMessage";
+import ServiceBot from "./ServiceBot";
 import NewsApi from "../app/NewsApi/NewsApi";
 import {
  NEWS_COMMAND,
  NEWS_COMMAND_DESCRIPTION
 } from "./NewsApiService/descriptor-command";
 
-export default class NewsApiService{
+export default class NewsApiService extends ServiceBot{
  /**
   *
   * @param {*} bot
@@ -14,15 +15,14 @@ export default class NewsApiService{
   * @param {*} storageManager
   */
  constructor(bot, appExpress, storageManager){
-  this.bot = bot;
-  this.appExpress = appExpress;
+  super(bot, appExpress, storageManager);
   this.api = new NewsApi(bot, appExpress, storageManager);
  }
  /**
   *
   */
  init = () => {
-  this.bot.registerCommand(NEWS_COMMAND, async (msg, args) => {
+  this.registerCommand(NEWS_COMMAND, async (msg, args) => {
    const { channel } = msg;
    const { id: channel_id } = channel;
 

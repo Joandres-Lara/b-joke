@@ -1,5 +1,6 @@
 import JokeApiJobSchedule from "../jobs/JokeApiJobSchedule";
 import JokeMessage from "../app/Messages/JokeMessage";
+import ServiceBot from "./ServiceBot";
 import JokeApi from "../app/JokeApi";
 
 import {
@@ -7,7 +8,7 @@ import {
  JOKE_COMMAND_DESCRIPTION
 } from "./JokeApiService/descriptor-commands";
 
-export default class JokeApiService {
+export default class JokeApiService extends ServiceBot {
  /**
   *
   * @param {Eris.Client} bot
@@ -15,8 +16,7 @@ export default class JokeApiService {
   * @param {StorageJobs}
   */
  constructor(bot, appExpress, storageManager) {
-  this.bot = bot;
-  this.appExpress = appExpress;
+  super(bot, appExpress, storageManager);
   this.storageJobs = storageManager.get("jobs");
   this.api = new JokeApi();
  }
@@ -25,7 +25,7 @@ export default class JokeApiService {
   * @returns {void}
   */
  init = () => {
-  this.bot.registerCommand(JOKE_COMMAND, async (msg, args) => {
+  this.registerCommand(JOKE_COMMAND, async (msg, args) => {
    const { id: channel_id } = msg.channel;
 
    if(args.length === 0){

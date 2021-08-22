@@ -13,7 +13,7 @@ jest.mock("../../src/app/JokeApi/JokeApi");
 jest.mock("../../src/app/Storages/DefaultStorage")
 
 beforeEach(() => {
- new JokeApiService(new Eris.CommandClient(), null, { get: () => new DefaultStorage()}).init();
+ new JokeApiService(new Eris.CommandClient(), null, { get: () => new DefaultStorage()}).withoutMiddlewares().init();
 })
 
 test("Called `JokeApi().getJoke()` when `args.length` is 0", async () => {

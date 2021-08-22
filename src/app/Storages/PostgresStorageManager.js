@@ -18,7 +18,7 @@ export default class PostgresStorageManager{
  }
  /**
   *
-  * @param {*} storageName
+  * @param {string} storageName
   * @returns {Storage}
   */
  get(storageName){

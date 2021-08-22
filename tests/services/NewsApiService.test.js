@@ -12,7 +12,7 @@ import {
 jest.mock("../../src/app/NewsApi/NewsApi");
 
 beforeEach(() => {
- new NewsApiService(new Eris.CommandClient(), null, { get: () => new DefaultStorage() }).init();
+ new NewsApiService(new Eris.CommandClient(), null, { get: () => new DefaultStorage() }).withoutMiddlewares().init();
 })
 
 test("Called `getNewsItems` when `args.length` is zero and send NewsItemMessage", async () => {
