@@ -19,6 +19,11 @@ export default class MiddlewareAttemptRequestsBot{
   * @returns
   */
  hasMaxAttemptRequests(author){
+
+  if(process.argv.includes("--desactive-attempt-request")){
+   return false;
+  }
+
   const users_attempts = this.getUserAttemptById(author.id);
   // Hasta los 5 intentos empieza a comprobar.
   if(users_attempts.length < 5){

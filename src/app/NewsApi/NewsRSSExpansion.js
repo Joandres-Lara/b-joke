@@ -1,7 +1,7 @@
 import NewsRSS from "./NewsRSS";
 import NewsItem from "./NewsItem";
 
-export default class NewsRSSExpansion extends NewsRSS{
+export default class NewsRSSExpansion extends NewsRSS {
  /**
   *
   * @var {string} type
@@ -10,18 +10,18 @@ export default class NewsRSSExpansion extends NewsRSS{
  /**
   *
   */
- constructor(){
+ constructor() {
   super();
  }
  /**
   *
   * @returns {Promise<NewsItem>}
   */
- async requestNews(){
+ async requestNews() {
   const response = await this.fetcher("https://expansion.mx/rss/tecnologia", {
    headers: {
-    "Content-Type": "application/xml; charset=utf-8"
-   }
+    "Content-Type": "application/xml; charset=utf-8",
+   },
   });
 
   const xml = await response.text();
@@ -29,8 +29,6 @@ export default class NewsRSSExpansion extends NewsRSS{
   const news = xmlParsed.element("rss").element("channel").element("item");
 
   return news.map((newsItem) => {
-
-
    const id = newsItem.get("guid", true).value();
    const link = newsItem.get("link");
    const title = newsItem.get("title");
@@ -40,17 +38,20 @@ export default class NewsRSSExpansion extends NewsRSS{
    const created_at = new Date(Date.parse(newsItem.get("pubDate")));
    const description = newsItem.get("description");
 
-   return new NewsItem({
-    id,
-    link,
-    image: image.url,
-    author,
-    title,
-    content,
-    description,
-    created_at,
-    rss: this.type,
-   }, "Expansión");
-  })
+   return new NewsItem(
+    {
+     id,
+     link,
+     image: image.url,
+     author,
+     title,
+     content,
+     description,
+     created_at,
+     rss: this.type,
+    },
+    "Expansión"
+   );
+  });
  }
 }

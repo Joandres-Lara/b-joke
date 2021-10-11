@@ -2,7 +2,7 @@ import JokeApiJobSchedule from "./JokeApiJobSchedule";
 import JokeMessageDaily from "../app/Messages/JokeMessageDaily";
 import JokeApi from "../app/JokeApi";
 
-import schedule from "node-schedule";
+import nodeSchedule from "node-schedule";
 
 // https://www.digitalocean.com/community/tutorials/nodejs-cron-jobs-by-examples
 export default class JokeApiJob {
@@ -10,8 +10,8 @@ export default class JokeApiJob {
   *
   * @var {RecurrenceRule} SCHEDULE_TIMER
   */
- static SCHEDULE_TIMER = (() => {
-  const config = new schedule.RecurrenceRule();
+ static DEFAULT_SCHEDULE_TIMER = (() => {
+  const config = new nodeSchedule.RecurrenceRule();
   config.hour = 9;
   config.minute = 0;
   config.tz = "America/Mexico_City";
@@ -40,7 +40,7 @@ export default class JokeApiJob {
   * @returns {void}
   */
  initJobs = () => {
-  this.schedule(JokeApiJob.SCHEDULE_TIMER, async () => {
+  this.schedule(JokeApiJob.DEFAULT_SCHEDULE_TIMER, async () => {
    const joke = await new JokeApi().getJoke();
    let jobs = this.getAllJobs();
 
@@ -90,6 +90,6 @@ export default class JokeApiJob {
   * @returns {void}
   */
  schedule = (cronExpression, cb) => {
-  schedule.scheduleJob(cronExpression, cb);
+  nodeSchedule.scheduleJob(cronExpression, cb);
  };
 }

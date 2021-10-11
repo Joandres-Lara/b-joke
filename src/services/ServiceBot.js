@@ -1,17 +1,18 @@
+import Message from "../app/Messages/Message";
 import MiddlewareAttemptRequestsBot from "./middlewares/MiddlewareAttemptRequestsBot";
 
-export default class ServiceBot{
+export default class ServiceBot {
  bot = null;
  appExpress = null;
  storageManager = null;
 
- constructor(bot, appExpress, storageManager){
+ constructor(bot, appExpress, storageManager) {
   this.bot = bot;
   this.appExpress = appExpress;
   this.storageManager = storageManager;
   // Default middlewares
   this.middlewares = [
-   new MiddlewareAttemptRequestsBot(bot, appExpress, storageManager)
+   new MiddlewareAttemptRequestsBot(bot, appExpress, storageManager),
   ];
  }
  /**
@@ -32,19 +33,19 @@ export default class ServiceBot{
   const next = () => {
    current_index++;
 
-   if(current_index in this.middlewares){
+   if (current_index in this.middlewares) {
     this.middlewares[current_index].handle(next, ...args);
    } else {
     cb(...args);
    }
   };
 
-  if(middleware){
+  if (middleware) {
    middleware.handle(next, ...args);
   } else {
    cb(...args);
   }
- }
+ };
  /**
   *
   * @returns {this}
@@ -52,13 +53,16 @@ export default class ServiceBot{
  withoutMiddlewares = () => {
   this.middlewares = [];
   return this;
- }
+ };
  /**
   *
   * @param {*} cb
   * @returns
   */
- withMiddlewares = (cb, ...extraArgs) => (...args) => this.applyMiddlewares(cb, ...args.concat(...extraArgs));
+ withMiddlewares =
+  (cb, ...extraArgs) =>
+  (...args) =>
+   this.applyMiddlewares(cb, ...args.concat(...extraArgs));
  /**
   *
   * @param {*} command
@@ -66,6 +70,20 @@ export default class ServiceBot{
   * @param {*} cb
   */
  registerCommand = (command, cb, description) => {
-  this.bot.registerCommand(command, this.withMiddlewares(cb, command, description), description);
+  this.bot.registerCommand(
+   command,
+   this.withMiddlewares(cb, command, description),
+   description
+  );
+ };
+ /**
+  *
+  * @param {*} channel_id
+  */
+ sendMessage(channel_id, message) {
+  if(message instanceof Message){
+   message = message.toObject();
+  }
+  this.bot.createMessage(channel_id, message);
  }
 }

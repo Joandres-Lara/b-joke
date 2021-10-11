@@ -36,7 +36,7 @@ export default class NewsApiService extends ServiceBot{
      message = new VoidNewsItemMessage();
     }
 
-    return this.bot.createMessage(channel_id, message.toObject());
+    return this.sendMessage(channel_id, message.toObject());
    }
 
   }, NEWS_COMMAND_DESCRIPTION);

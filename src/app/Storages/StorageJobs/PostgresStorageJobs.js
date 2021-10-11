@@ -25,10 +25,18 @@ export default class PostgresStorageJobs extends PostgresStorage {
   * @returns {Promise<boolean|Models.ChannelJob>}
   */
  async insertIfNotFind({ channel_id, job_type, config }) {
-  if (!(await this.find({ job_type, channel_id }))) {
-   return await this.insert({ job_type, channel_id, config });
+  if (await this.find({ job_type, channel_id })) {
+   return false;
   }
-  return false;
+  return await this.insert({ job_type, channel_id, config });
+ }
+
+ async findAndDelete({ channel_id, job_type }){
+  const job = await this.find({ job_type, channel_id });
+  if(!job){
+   return;
+  }
+  return await job.destroy();
  }
  /**
   *
@@ -43,12 +51,32 @@ export default class PostgresStorageJobs extends PostgresStorage {
  }
  /**
   *
+  * @param {*} query
+  * @returns
+  */
+ async queryFindAll(query){
+  return await this.getModelJob().findAll(query);
+ }
+ /**
+  *
   * @returns {Promise<Array<Model>>}
   */
  async findAll({ job_type }) {
-  return await this.getModelJob().findAll({
+  return await this.queryFindAll({
    where: {
     [Op.and]: [{ job_type }],
+   },
+  });
+ }
+ /**
+  *
+  * @param {*} channel_id
+  * @returns
+  */
+ async findAllByChannel(channel_id){
+  return await this.queryFindAll({
+   where: {
+    [Op.and]: [{ channel_id }],
    },
   });
  }

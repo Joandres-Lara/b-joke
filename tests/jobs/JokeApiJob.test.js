@@ -115,7 +115,7 @@ test("Initialize cron jobs and called when matched with time", async () => {
  instance.init();
 
  expect(schedule.scheduleJob).toHaveBeenCalledWith(
-  JokeApiJob.SCHEDULE_TIMER,
+  JokeApiJob.DEFAULT_SCHEDULE_TIMER,
   expect.any(Function)
  );
 
@@ -123,7 +123,7 @@ test("Initialize cron jobs and called when matched with time", async () => {
 
  JokeApi.getJoke.mockImplementation(() => promisedJokeString);
 
- schedule.call(JokeApiJob.SCHEDULE_TIMER);
+ schedule.call(JokeApiJob.DEFAULT_SCHEDULE_TIMER);
 
  expect(JokeApi).toHaveBeenCalled();
  expect(JokeApi.getJoke).toHaveBeenCalled();
@@ -252,7 +252,7 @@ describe("Use async StorageJobs", () => {
   instance.init();
 
   expect(schedule.scheduleJob).toHaveBeenCalledWith(
-   JokeApiJob.SCHEDULE_TIMER,
+   JokeApiJob.DEFAULT_SCHEDULE_TIMER,
    expect.any(Function)
   );
 
@@ -260,7 +260,7 @@ describe("Use async StorageJobs", () => {
 
   JokeApi.getJoke.mockImplementation(() => promisedJokeString);
 
-  schedule.call(JokeApiJob.SCHEDULE_TIMER);
+  schedule.call(JokeApiJob.DEFAULT_SCHEDULE_TIMER);
 
   expect(JokeApi).toHaveBeenCalled();
   expect(JokeApi.getJoke).toHaveBeenCalled();
