@@ -15,7 +15,18 @@ module.exports = (api) => {
   ],
   plugins: [
    require("@babel/plugin-transform-runtime"),
-   require("@babel/plugin-transform-async-to-generator")
+   require("@babel/plugin-transform-async-to-generator"),
+   [
+    require("babel-plugin-module-resolver"),
+    {
+     alias: {
+      "@app": "./src/app",
+      "@jobs": "./src/jobs",
+      "@services": "./src/services",
+      "@util-tests": "./util-tests"
+     }
+    }
+   ]
   ],
   ignore: __TEST__
    ? []

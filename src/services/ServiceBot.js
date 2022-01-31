@@ -22,13 +22,12 @@ export default class ServiceBot {
  registerMiddleware = (...middlewares) => this.middlewares.push(...middlewares);
  /**
   *
-  * @param {string} cb
+  * @param {string} fnDirty
   * @param  {...any} args
   */
 
- applyMiddlewares = (cb, ...args) => {
-  let current_index = 0;
-  let [middleware] = this.middlewares;
+ applyMiddlewares = (fnDirty, ...args) => {
+  let current_index = -1;
 
   const next = () => {
    current_index++;
@@ -36,15 +35,11 @@ export default class ServiceBot {
    if (current_index in this.middlewares) {
     this.middlewares[current_index].handle(next, ...args);
    } else {
-    cb(...args);
+    fnDirty(...args);
    }
   };
 
-  if (middleware) {
-   middleware.handle(next, ...args);
-  } else {
-   cb(...args);
-  }
+  next();
  };
  /**
   *

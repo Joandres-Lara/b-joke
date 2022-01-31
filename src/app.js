@@ -27,10 +27,14 @@ export default async function app(bot, appExpress){
  if(activeJobs) {
   console.log("Jobs active");
   Jobs.configure(bot, appExpress, storage);
+ } else {
+  console.log("Job is desactive use --jobs by active");
  }
 
  if(activeServices) {
   console.log("Services active");
   Services.configure(bot, appExpress, storage);
+ } else {
+  console.log("Services is desactive use --services by active")
  }
 }

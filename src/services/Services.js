@@ -1,5 +1,6 @@
 import JokeApiService from "./JokeApiService";
 import NewsApiService from "./NewsApiService";
+import RecordService from "./RecordService";
 
 export default class Services {
  /**
@@ -19,7 +20,8 @@ export default class Services {
  constructor(...args) {
   this.services.push(
    new JokeApiService(...args),
-   new NewsApiService(...args)
+   new NewsApiService(...args),
+   new RecordService(...args)
   );
  }
 

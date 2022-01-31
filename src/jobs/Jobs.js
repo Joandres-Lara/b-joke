@@ -8,7 +8,7 @@ export default class Jobs{
 
  constructor(...args){
   this.jobs.push(
-   new JokeApiJob(...args)
+   new JokeApiJob(...args),
   );
  }
 

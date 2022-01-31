@@ -7,8 +7,9 @@ export default class XMLNodeAdapter {
   *
   * @param {*} dirtyNode
   */
- constructor(dirtyNode){
-  this.current = dirtyNode
+ constructor(dirtyNode, tagName){
+  this.current = dirtyNode;
+  this.tagName = tagName;
  }
  /**
   *
@@ -33,14 +34,22 @@ export default class XMLNodeAdapter {
   * @returns {object}
   */
  attrs(){
-  return this.current.$;
+  try{
+   return this.current.$;
+  }catch(e){
+   console.error(`Can't get attr for ${this.tagName} of ${JSON.stringify(this.current)}`, e);
+  }
  }
  /**
   *
   *
   */
  value(){
-  return this.current._;
+  try{
+   return this.current._
+  }catch(e){
+   console.error(`Can't get value for ${this.tagName} of ${JSON.stringify(this.current)}`, e);
+  }
  }
  /**
   *
@@ -53,7 +62,7 @@ export default class XMLNodeAdapter {
   }
 
   if(adapt){
-   value = new XMLNodeAdapter(value);
+   value = new XMLNodeAdapter(value, key);
   }
 
   return value;
@@ -63,7 +72,7 @@ export default class XMLNodeAdapter {
   * @param {int} index
   */
  at(index){
-  return new XMLNodeAdapter(this.current[index]);
+  return new XMLNodeAdapter(this.current[index], this.tagName);
  }
  /**
   *
@@ -82,7 +91,7 @@ export default class XMLNodeAdapter {
  forEach(cb){
   this.validateCurrentAsArray();
   this.current.forEach((dirtyNode, ...args) => {
-   cb(new XMLNodeAdapter(dirtyNode), ...args);
+   cb(new XMLNodeAdapter(dirtyNode, this.tagName), ...args);
   }, this);
 
   return this;
@@ -95,7 +104,7 @@ export default class XMLNodeAdapter {
  map(cb){
   this.validateCurrentAsArray();
   return this.current.map((dirtyNode, ...args) => {
-   return cb(new XMLNodeAdapter(dirtyNode), ...args);
+   return cb(new XMLNodeAdapter(dirtyNode, this.tagName), ...args);
   }, this)
  }
  /**
