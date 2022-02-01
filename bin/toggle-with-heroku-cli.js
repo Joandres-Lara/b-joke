@@ -9,19 +9,24 @@ async function exec(command){
  }));
 }
 
+const MATCH_STATUS_OFF = "No dynos on";
+
 (async () => {
- const stoutHerokuStatus = await exec("heroku status");
+ const stoutHerokuStatus = await exec("heroku ps");
  let result = "";
 
- if(stoutHerokuStatus.indexOf("No known issues at this time") !== -1){
+ if(stoutHerokuStatus.indexOf(MATCH_STATUS_OFF) !== -1){
   try{
-   result = await exec("heroku ps:restart b-joke");
+   result = await exec("heroku ps:scale worker=1");
+   console.log("Start bot B-Joke");
   }catch(e){
    console.error(e);
   }
  } else {
+  console.log(`Not found ${MATCH_STATUS_OFF} in ${stoutHerokuStatus}`);
   try{
-   result = await exec("heroku ps:stop b-joke");
+   result = await exec("heroku ps:scale worker=0");
+   console.log("Stop bot B-Joke")
   }catch(e){
    console.error(e);
   }
