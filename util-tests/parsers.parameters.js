@@ -23,6 +23,11 @@ export default [
  [
   "Recuerdame a las 10:40 la junta de la oficina",
   "2020-11-10T16:40:00.000Z",
-  "Junta de la oficina"
+  "La junta de la oficina"
  ],
+ [
+  "Mañana a las 5 de la tarde, recuérdame llamar a mi abuelita.",
+  "2020-11-11T23:00:00.000Z",
+  "Llamar a mi abuelita."
+ ]
 ];

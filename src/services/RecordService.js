@@ -4,6 +4,8 @@ import {
  RECORD_COMMAND_DESCRIPTION,
 } from "./RecordService/descriptor-command";
 import ErrorCronParseMessage from "@app/Messages/ErrorCronParseMessage";
+import ErrorActionParseMessage from "@app/Messages/ErrorActionParseMessage";
+import InvalidRecordMessage from "@app/Messages/InvalidRecordMessage";
 import CronParser from "@app/Parsers/CronParser";
 import ActionParser from "@app/Parsers/ActionParser";
 
@@ -23,11 +25,11 @@ export default class RecordService extends ServiceBot {
     const { id: channel_id } = channel;
 
     if (args.length > 0) {
-
-     const [arg] = args[0];
-
+     const arg = args.join(" ");
      const cron_job = this.cron_parser.parse(arg);
-     const action = this.action_parser.parse(arg);
+     const action = this.action_parser.parse(args);
+
+     console.log({ cron_job, action })
 
      if (this.cron_parser.hasError()) {
       return this.sendMessage(
@@ -42,8 +44,6 @@ export default class RecordService extends ServiceBot {
        new ErrorActionParseMessage(this.action_parser.getError())
       );
      }
-
-     console.log({ cron_job, action });
     }
 
     this.sendMessage(channel_id, new InvalidRecordMessage());

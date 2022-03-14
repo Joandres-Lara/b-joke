@@ -9,8 +9,8 @@ describe("CronParser", () => {
   parser = new CronParser();
  });
 
- test.each(parameters)("Parse '%s'", (...[strExpect, cronJobParseExpect,, frezzeDate = new Date(2020, 10, 10, 0, 0, 0)]) => {
+ test.each(parameters)("Parse '%s'", (...[strParse, cronJobParseExpect,, frezzeDate = new Date(2020, 10, 10, 0, 0, 0)]) => {
   advanceTo(frezzeDate);
-  expect(parser.parse(strExpect)).toEqual(cronJobParseExpect);
+  expect(parser.parse(strParse)).toEqual(cronJobParseExpect);
  });
 });

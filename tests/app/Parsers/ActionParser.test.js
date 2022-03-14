@@ -1,7 +1,14 @@
 import ActionParser from "@app/Parsers/ActionParser";
 import parameters from "@util-tests/parsers.parameters";
 describe("ActionParser", () => {
- test.each(parameters)("Parse %s", (...[strExpect,, actionParserExpect, frezzeDate = new Date(2020, 9, 31)]) => {
+ /** @type {ActionParser} */
+ let action;
 
+ beforeEach(() => {
+  action = new ActionParser();
+ });
+
+ test.each(parameters)("Parse %s", (...[strParse,, actionParserExpect]) => {
+  expect(action.parse(strParse.split(" "))).toEqual(actionParserExpect);
  });
 });

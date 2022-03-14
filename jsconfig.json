@@ -1,24 +1,39 @@
 {
   "compilerOptions": {
-   "target": "ES5",
-   "allowJs": true,
-   "skipDefaultLibCheck": true,
-   "strict": true,
-   "forceConsistentCasingInFileNames": true,
-   "noEmit": true,
-   "esModuleInterop": true,
-   "module": "CommonJS",
-   "moduleResolution": "node",
-   "resolveJsonModule": true,
-   "isolatedModules": true,
-   "jsx": "preserve",
-   "baseUrl": "./",
-   "paths": {
-    "@app": ["./src/app"],
-    "@jobs": ["./src/jobs"],
-    "@services": ["./src/services"],
-    "@util-tests": ["./util-tests"]
-   }
+    "target": "ES6",
+    "lib": ["ESNext"],
+    "allowJs": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": "./",
+    "paths": {
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@jobs/*": [
+        "./src/jobs/*"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@util-tests/*": [
+        "./util-tests/*"
+      ]
+    }
   },
-  "exclude": ["node_modules", "app", "config", "database", "tests"]
- }
+  "exclude": [
+    "node_modules",
+    "app",
+    "config",
+    "database",
+    "tests"
+  ]
+}
