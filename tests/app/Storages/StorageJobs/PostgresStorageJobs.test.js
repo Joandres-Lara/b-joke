@@ -1,4 +1,4 @@
-import PostgresStorageJobs from "../../../../src/app/Storages/StorageJobs/PostgresStorageJobs";
+import PostgresStorageJobs from "@app/Storages/StorageJobs/PostgresStorageJobs";
 
 let instance_jobs;
 
@@ -53,7 +53,9 @@ test("Insert ChannelJob and find in all", async () => {
   config: {},
  });
 
- const promisedFindAll = await instance_jobs.findAll({ job_type: same_job_type });
+ const promisedFindAll = await instance_jobs.findAll({
+  job_type: same_job_type,
+ });
 
  expect(promisedFindAll).toHaveLength(3);
  expect(promisedFindAll).toEqual(
@@ -63,9 +65,7 @@ test("Insert ChannelJob and find in all", async () => {
  );
 });
 
-
 test("Not insert if find", async () => {
-
  const same_job_type = "job-type-test-not-insert";
 
  await instance_jobs.insert({
@@ -74,18 +74,29 @@ test("Not insert if find", async () => {
   config: {},
  });
 
- instance_jobs.insertIfNotFind({ channel_id: "9092890380", job_type: same_job_type });
+ instance_jobs.insertIfNotFind({
+  channel_id: "9092890380",
+  job_type: same_job_type,
+ });
 
- await expect(instance_jobs.findAll({ job_type: same_job_type })).resolves.toHaveLength(1);
+ await expect(
+  instance_jobs.findAll({ job_type: same_job_type })
+ ).resolves.toHaveLength(1);
 });
 
 test("Insert if not find", async () => {
-
  const same_job_type = "job-type-test-insert-not-find";
 
- await expect(instance_jobs.findAll({ job_type: same_job_type })).resolves.toHaveLength(0);
+ await expect(
+  instance_jobs.findAll({ job_type: same_job_type })
+ ).resolves.toHaveLength(0);
 
- await instance_jobs.insertIfNotFind({ channel_id: "90992890380", job_type: same_job_type });
+ await instance_jobs.insertIfNotFind({
+  channel_id: "90992890380",
+  job_type: same_job_type,
+ });
 
- await expect(instance_jobs.findAll({ job_type: same_job_type })).resolves.toHaveLength(1);
-})
+ await expect(
+  instance_jobs.findAll({ job_type: same_job_type })
+ ).resolves.toHaveLength(1);
+});

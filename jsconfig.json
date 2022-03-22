@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "allowJs": true,
     "skipDefaultLibCheck": true,
     "strict": true,
@@ -30,10 +32,6 @@
     }
   },
   "exclude": [
-    "node_modules",
-    "app",
-    "config",
-    "database",
-    "tests"
+    "node_modules"
   ]
 }

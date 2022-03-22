@@ -1,5 +1,5 @@
-import JokeApiJobSchedule from "../jobs/JokeApiJobSchedule";
-import JokeStatusMessage from "../app/Messages/JokeStatusMessage";
+import JokeApiJobSchedule from "@jobs/schedule-types/JokeApiJobSchedule";
+import JokeStatusMessage from "@app/Messages/JokeStatusMessage";
 import JokeMessage from "../app/Messages/JokeMessage";
 import ServiceBot from "./ServiceBot";
 import JokeApi from "../app/JokeApi";
@@ -10,11 +10,15 @@ import {
 } from "./JokeApiService/descriptor-commands";
 
 export default class JokeApiService extends ServiceBot {
+ /** @type {import("@app/Storages/StorageJobs/PostgresStorageJobs").default} */
+ storageJobs;
+ /** @type {import("@app/JokeApi/JokeApi").default} */
+ api;
  /**
   *
-  * @param {Eris.Client} bot
+  * @param {import("eris").CommandClient} bot
   * @param {Express.Application} appExpress
-  * @param {StorageJobs}
+  * @param {import("@app/Storages/PostgresStorageManager").default}
   */
  constructor(bot, appExpress, storageManager) {
   super(bot, appExpress, storageManager);
@@ -42,15 +46,15 @@ export default class JokeApiService extends ServiceBot {
     }
 
     if (args.includes("subscribe")) {
-     this.subscribeChannel(channel_id);
+     await this.subscribeChannel(channel_id);
      return this.sendMessage(
       channel_id,
-      "Te has suscrito, para que te envíemos, chiste diarios."
+      "Te has suscrito, para que te envíemos, chistes diarios."
      );
     }
 
     if(args.includes("unsubscribe")){
-     this.unsubscribeChannel(channel_id);
+     await this.unsubscribeChannel(channel_id);
      return this.sendMessage(
       channel_id,
       "¿Porqué no quieres que te cuente chistes?"
@@ -69,7 +73,8 @@ export default class JokeApiService extends ServiceBot {
  }
  /**
   *
-  * @param {*} channel_id
+  * @param {string} channel_id
+  * @return {{isSubscribe: boolean}}
   */
  async getStatusByChannel(channel_id){
   const jobSubscribe = await this.storageJobs.find(new JokeApiJobSchedule(channel_id));
@@ -85,16 +90,14 @@ export default class JokeApiService extends ServiceBot {
  }
  /**
   *
-  * @param {*} channel_id
-  * @returns
+  * @param {string} channel_id
   */
  subscribeChannel(channel_id) {
   return this.storageJobs.insertIfNotFind(new JokeApiJobSchedule(channel_id));
  }
  /**
   *
-  * @param {*} channel_id
-  * @returns
+  * @param {string} channel_id
   */
  unsubscribeChannel(channel_id){
   return this.storageJobs.findAndDelete(new JokeApiJobSchedule(channel_id));

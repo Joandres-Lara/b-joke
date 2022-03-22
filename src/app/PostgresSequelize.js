@@ -3,15 +3,24 @@ import { Sequelize, DataTypes } from "sequelize";
 import path from "path";
 import fs from "fs/promises";
 
-export default class PostgresSequelize{
+/**
+ * @typedef {import("sequelize")} Sequelize
+ * @typedef {import("sequelize").DataTypes} DataTypes
+ *
+ * @typedef {{
+ *  ChannelJob: (typeof import("sequelize").Model);
+ *  NewsItemVisited: (typeof import("sequelize").Model);
+ * }} RecordModels
+ */
+export default class PostgresSequelize {
  /**
   *
-  * @var {Sequelize}
+  * @type {Sequelize}
   */
  static instance;
  /**
   *
-  * @var {object}
+  * @type {RecordModels}
   */
  static models = {};
  /**
@@ -19,57 +28,59 @@ export default class PostgresSequelize{
   * @returns
   */
  static getInstance = () => {
-  if(!PostgresSequelize.instance){
-   throw new Error("Instance is not initialize, call `connect` before get instance");
+  if (!PostgresSequelize.instance) {
+   throw new Error(
+    "Instance is not initialize, call `connect` before get instance"
+   );
   }
   return PostgresSequelize.instance;
  };
  /**
   *
-  */
- constructor(){
-
- }
- /**
-  *
-  * @see {PostgresSequelize.getInstance}
   * @returns {Sequelize}
   */
  getInstance = () => PostgresSequelize.getInstance();
  /**
   *
-  * @returns {void}
+  * @returns {Promise<PostgresSequelize>}
   */
  initializeModels = async () => {
-  if(Object.keys(PostgresSequelize.models).length === 0 && this.getInstance()){
+  if (
+   Object.keys(PostgresSequelize.models).length === 0 &&
+   this.getInstance()
+  ) {
    const modelPath = path.resolve("src/models");
    const files = await fs.readdir(modelPath);
    // Establece los valores por referencia.
-   let models = PostgresSequelize.models = {};
+   let models = (PostgresSequelize.models = {});
    // Obtiene los modelos de manera asincrónica
    // de manera que se puedan crear todas las instancias.
-   await Promise.all(files.map(async (file) => {
-    const caller = (await import(path.join(modelPath, file))).default;
-    const model = await caller(this.getInstance(), DataTypes);
-    models[model.name] = model;
-    return true;
-   }));
+   await Promise.all(
+    files.map(async (file) => {
+     /** @type {{(sequelize: Sequelize, DataTypes: DataTypes) => (typeof import("sequelize").Model) }} */
+     const caller = (await import(path.join(modelPath, file))).default;
+     const model = await caller(this.getInstance(), DataTypes);
+     models[model.name] = model;
+     return true;
+    })
+   );
   }
   return this;
- }
+ };
  /**
   *
-  * @returns {Sequelize.Model}
+  * @param {'ChannelJob'|'NewsItemVisited'} modelName
+  * @returns {(typeof import("sequelize").Model)}
   */
  getModel = (modelName) => {
-  return PostgresSequelize.models[modelName]
- }
+  return PostgresSequelize.models[modelName];
+ };
  /**
   *
-  * @returns {this}
+  * @returns {Promise<PostgresSequelize>}
   */
  connect = async () => {
-  if(!PostgresSequelize.instance){
+  if (!PostgresSequelize.instance) {
    // La conexión y la obtención de la configuración
    // deberían estar aquí dentro.
    try {
@@ -87,16 +98,19 @@ export default class PostgresSequelize{
   await this.initializeModels();
 
   return this;
- }
+ };
  /**
   *
-  * @returns {void}
+  * @returns {Promise<void>}
   */
- disconnect = () => {
-  if(PostgresSequelize.instance){
-   const _ = PostgresSequelize.instance.close();
-   delete PostgresSequelize.instance;
-   return _;
+ async disconnect() {
+  if (PostgresSequelize.instance) {
+   try {
+    await PostgresSequelize.instance.close();
+    delete PostgresSequelize.instance;
+   } catch (e) {
+    console.error(e);
+   }
   }
  }
 }

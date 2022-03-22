@@ -2,5 +2,6 @@ node_modules
 dist
 coverage
 .env
+**/*.cache
 
 tester.js

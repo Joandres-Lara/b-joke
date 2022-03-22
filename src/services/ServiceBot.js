@@ -1,11 +1,24 @@
+import Logger from "@app/Logger";
 import Message from "../app/Messages/Message";
 import MiddlewareAttemptRequestsBot from "./middlewares/MiddlewareAttemptRequestsBot";
 
 export default class ServiceBot {
- bot = null;
- appExpress = null;
- storageManager = null;
-
+ /** @type {import("eris").CommandClient} */
+ bot;
+ /** @type {import("express").Application} */
+ appExpress;
+ /** @type {import("@app/Storages/PostgresStorageManager").default} */
+ storageManager;
+ /** @type {Middleware[]} */
+ middlewares;
+ /** @type {import("@app/Logger").default} */
+ logger;
+ /**
+  *
+  * @param {import("eris").Client} bot
+  * @param {import("express").Application} appExpress
+  * @param {import("@app/Storages/PostgresStorageManager").default} storageManager
+  */
  constructor(bot, appExpress, storageManager) {
   this.bot = bot;
   this.appExpress = appExpress;
@@ -15,31 +28,38 @@ export default class ServiceBot {
    new MiddlewareAttemptRequestsBot(bot, appExpress, storageManager),
   ];
  }
+
+ useLogger(logger = new Logger()){
+  this.logger = logger;
+ }
  /**
   *
-  *
+  * @param {...Middleware} middlewares
   */
  registerMiddleware = (...middlewares) => this.middlewares.push(...middlewares);
  /**
   *
-  * @param {string} fnDirty
+  * @param {() => Promise<void>} fnDirty
   * @param  {...any} args
   */
+ async applyMiddlewares(fnDirty, ...args){
+  try{
+   let current_index = -1;
 
- applyMiddlewares = (fnDirty, ...args) => {
-  let current_index = -1;
+   const next = async () => {
+    current_index++;
 
-  const next = () => {
-   current_index++;
+    if (current_index in this.middlewares) {
+     await this.middlewares[current_index].handle(next, ...args);
+    } else {
+     await fnDirty(...args);
+    }
+   };
 
-   if (current_index in this.middlewares) {
-    this.middlewares[current_index].handle(next, ...args);
-   } else {
-    fnDirty(...args);
-   }
-  };
-
-  next();
+   await next();
+  }catch(e){
+   this.logger.log(e.toString());
+  }
  };
  /**
   *
@@ -51,18 +71,20 @@ export default class ServiceBot {
  };
  /**
   *
-  * @param {*} cb
-  * @returns
+  * @param {() => void} cb
+  * @param {string} command
+  * @param {string} description
+  * @returns {(msg: import("eris").Message, args: []any) => any}
   */
  withMiddlewares =
-  (cb, ...extraArgs) =>
-  (...args) =>
-   this.applyMiddlewares(cb, ...args.concat(...extraArgs));
+  (cb, command, description) =>
+  (msg, args) =>
+   this.applyMiddlewares(cb, msg, args, command, description);
  /**
   *
-  * @param {*} command
-  * @param {*} description
-  * @param {*} cb
+  * @param {string} command
+  * @param {(msg: import("eris").Message, args: []string) => void} cb
+  * @param {string} description
   */
  registerCommand = (command, cb, description) => {
   this.bot.registerCommand(
@@ -73,7 +95,8 @@ export default class ServiceBot {
  };
  /**
   *
-  * @param {*} channel_id
+  * @param {string} channel_id
+  * @param {Message|string} message
   */
  sendMessage(channel_id, message) {
   if(message instanceof Message){

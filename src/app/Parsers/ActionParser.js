@@ -7,7 +7,6 @@ export default class ActionParser {
  error = null;
 
  constructor() {
-
  }
  /**
   *
@@ -20,7 +19,7 @@ export default class ActionParser {
  /**
   *
   * @param {string[]} strs
-  * @returns
+  * @returns {string|void}
   */
  parse(strs) {
   /** @type {string|null} */
@@ -45,12 +44,25 @@ export default class ActionParser {
    return this.#normalizeAction(action);
   }
  }
-
+ /**
+  *
+  * @returns {boolean}
+  */
  hasError() {
   return this.error !== null;
  }
-
+ /**
+  *
+  * @returns {Error}
+  */
  getError() {
   return this.error instanceof Error ? this.error : new Error(this.error);
+ }
+ /**
+  *
+  * @returns {void}
+  */
+ resetError(){
+  this.error = null;
  }
 }

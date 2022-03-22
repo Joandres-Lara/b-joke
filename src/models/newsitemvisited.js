@@ -2,6 +2,16 @@
 const {
   Model
 } = require('sequelize');
+
+/**
+ *
+ * @typedef {{news_item_uuid: string;}} NewsItemVisitedAttributes
+ */
+
+/**
+ * @param {import("sequelize")} sequelize
+ * @param {import("sequelize").DataTypes} DataTypes
+ */
 module.exports = (sequelize, DataTypes) => {
   class NewsItemVisited extends Model {
     /**

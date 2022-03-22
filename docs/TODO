@@ -13,3 +13,5 @@ TODO: [x] Puppeter para hacer un scraper de la página de http://chistes.com (Al
 TODO: [] Conexión con Spotify, para crear listas de reproducción.
 
 TODO: [x] Límite de peticiones para evitar saturación en el servidor del BOT.
+
+TODO: [] Agregar Typescript

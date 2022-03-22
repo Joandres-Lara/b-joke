@@ -1,32 +1,44 @@
 import differenceInMinutes from "date-fns/differenceInMinutes";
-
-export default class MiddlewareAttemptRequestsBot{
-
- constructor(bot){
+/**
+ * @type {Middleware}
+ */
+/**
+ * @implements {Middleware}
+ */
+export default class MiddlewareAttemptRequestsBot {
+ /** @type {import("eris").Client} */
+ bot;
+ /** @type {{[k : string]: Date[]}} */
+ users_attemps;
+ /**
+  *
+  * @param {import("eris").Client} bot
+  */
+ constructor(bot) {
   this.bot = bot;
   this.users_attempts = {};
  }
  /**
   *
+  * @param {number} id
   * @returns {array}
   */
- getUserAttemptById(id){
-  return this.users_attempts[id] = this.users_attempts[id] || [];
+ getUserAttemptById(id) {
+  return (this.users_attempts[id] = this.users_attempts[id] || []);
  }
  /**
   *
-  * @param {*} author
-  * @returns
+  * @param {import("eris").User} author
+  * @returns {boolean}
   */
- hasMaxAttemptRequests(author){
-
-  if(process.argv.includes("--desactive-attempt-request")){
+ hasMaxAttemptRequests(author) {
+  if (process.argv.includes("--desactive-attempt-request")) {
    return false;
   }
 
   const users_attempts = this.getUserAttemptById(author.id);
   // Hasta los 5 intentos empieza a comprobar.
-  if(users_attempts.length < 5){
+  if (users_attempts.length < 5) {
    users_attempts.push(new Date());
    return false;
   }
@@ -34,7 +46,7 @@ export default class MiddlewareAttemptRequestsBot{
   const [last_request] = users_attempts.concat([]).reverse();
 
   // Si el tiempo, de baneo ya pasó.
-  if(differenceInMinutes(new Date(), last_request) > 5){
+  if (differenceInMinutes(new Date(), last_request) > 5) {
    this.users_attempts[author.id] = [];
    return false;
   }
@@ -43,18 +55,22 @@ export default class MiddlewareAttemptRequestsBot{
  }
  /**
   *
-  * @param {Function} next
-  * @param {MessageChannel} msg
-  * @param {array} args
+  * @param {() => void} next
+  * @param {import("eris").Message} msg
+  * @param {string[]} args
   * @param {string} command
   * @returns {void}
   */
- handle(next, msg, args, command){
+ async handle(next, msg, args, command) {
   const { author, channel } = msg;
 
-  if(this.hasMaxAttemptRequests(author)){
-   return this.bot.createMessage(channel.id, `Lo siento ${author.username} demasiadas solicitudes para el comando: **!${command}** si sigues así, voy a explotar, así que mejor me protejo. Pero tu tienes que esperar 5 minutos.`);
+  if (this.hasMaxAttemptRequests(author)) {
+   return this.bot.createMessage(
+    channel.id,
+    `Lo siento ${author.username} demasiadas solicitudes para el comando: **!${command}** si sigues así, voy a explotar, así que mejor me protejo. Pero tu tienes que esperar 5 minutos.`
+   );
   }
-  next();
+
+  await next();
  }
 }

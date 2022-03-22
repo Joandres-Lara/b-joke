@@ -85,4 +85,11 @@ export default class CronParser {
  getError() {
   return this.error instanceof Error ? this.error : new Error(this.error);
  }
+ /**
+  *
+  * @returns {void}
+  */
+ resetError(){
+  this.error = null;
+ }
 }

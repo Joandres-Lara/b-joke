@@ -1,4 +1,4 @@
-export default class DefaultStorage{
+export default class DefaultStorage {
  /**
   *
   * @param {object} internalConfig
@@ -6,18 +6,21 @@ export default class DefaultStorage{
   * @returns
   */
  static shallowEqual = (internalConfig, config) => {
-  if(internalConfig === config){
+  if (internalConfig === config) {
    return true;
   }
 
-  for(let key in config){
-   if(internalConfig[key] !== config[key] && JSON.stringify(internalConfig[key]) !== JSON.stringify(config[key])){
+  for (let key in config) {
+   if (
+    internalConfig[key] !== config[key] &&
+    JSON.stringify(internalConfig[key]) !== JSON.stringify(config[key])
+   ) {
     return false;
    }
   }
 
   return true;
- }
+ };
  /**
   *
   * @var {Array} arr
@@ -26,43 +29,42 @@ export default class DefaultStorage{
  /**
   *
   */
- constructor(){
- }
- /**
-  *
-  * @returns {boolean}
-  */
- isAsync = () => false;
+ constructor() {}
  /**
   * Encuentra todos los elementos que coinciden con todos los elementos del objeto en `config`.
   *
-  * @param {object} config
-  * @returns {Array}
+  * @param {Record<any, any>} config
+  * @returns {Promise<[]any>}
   */
- findAll(config){
-  return this.arr.filter((_) => DefaultStorage.shallowEqual(_, config));
+ findAll(config) {
+  return Promise.resolve(this.arr.filter((_) => DefaultStorage.shallowEqual(_, config)));
  }
  /**
   * Encuentra el primer element que coincide con todos los elementos del objeto en `config`.
   *
-  * @param {*} config
+  * @param {Record<any, any>} config
+  * @returns {Promise<any>}
   */
- find(config){
-  return this.arr.find(_ => DefaultStorage.shallowEqual(_, config))
+ find(config) {
+  return Promise.resolve(this.arr.find((_) => DefaultStorage.shallowEqual(_, config)));
  }
  /**
   *
-  * @returns {object}
+  * @param {any} values
+  * @returns {Promise<any>}
   */
- insert(values){
-  return this.arr.push(values);
+ insert(values) {
+  this.arr.push(values);
+  return Promise.resolve(values);
  }
  /**
   *
+  * @param {any} values
+  * @returns {Promise<any>}
   */
- insertIfNotFind(values){
-  if(!this.find(values)){
-   return this.insert(values);
+ async insertIfNotFind(values) {
+  if (!(await this.find(values))) {
+   return await this.insert(values);
   }
  }
 }

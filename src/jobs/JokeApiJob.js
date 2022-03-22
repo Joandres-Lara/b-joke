@@ -1,95 +1,49 @@
-import JokeApiJobSchedule from "./JokeApiJobSchedule";
+import JokeApiJobSchedule from "./schedule-types/JokeApiJobSchedule";
 import JokeMessageDaily from "../app/Messages/JokeMessageDaily";
 import JokeApi from "../app/JokeApi";
-
-import nodeSchedule from "node-schedule";
+import BaseJob from "./BaseJob";
 
 // https://www.digitalocean.com/community/tutorials/nodejs-cron-jobs-by-examples
-export default class JokeApiJob {
- /**
-  *
-  * @var {RecurrenceRule} SCHEDULE_TIMER
-  */
- static DEFAULT_SCHEDULE_TIMER = (() => {
-  const config = new nodeSchedule.RecurrenceRule();
-  config.hour = 9;
-  config.minute = 0;
-  config.tz = "America/Mexico_City";
-  return config;
- })();
- /**
-  *
-  * @param {Eris.Client} bot
-  * @param {Express.Application} appExpress
-  * @param {StorageManager}
-  */
+export default class JokeApiJob extends BaseJob {
  constructor(bot, appExpress, storageManager) {
-  this.bot = bot;
-  this.appExpress = appExpress;
-  this.storageJobs = storageManager.get("jobs");
+  super(bot, appExpress, storageManager);
  }
  /**
   *
-  * @returns {void}
+  * @returns {Promise<void>}
   */
- init = () => {
+ async init(){
   this.initJobs();
  };
  /**
   *
   * @returns {void}
   */
- initJobs = () => {
+ async initJobs(){
   this.schedule(JokeApiJob.DEFAULT_SCHEDULE_TIMER, async () => {
    const joke = await new JokeApi().getJoke();
-   let jobs = this.getAllJobs();
-
-   const eachJobs = () => {
-    jobs.forEach(({ channel_id }) => {
-     const message = new JokeMessageDaily(joke);
-     this.bot.createMessage(channel_id, message.toObject());
-    });
-   };
-
-   if (this.storageJobs.isAsync()) {
-    return (async () => {
-     jobs = await jobs;
-     eachJobs();
-    })();
-   }
-
-   eachJobs();
+   let jobs = await this.getAllJobs();
+   jobs.forEach(({ channel_id }) => {
+    const message = new JokeMessageDaily(joke);
+    this.bot.createMessage(channel_id, message.toObject());
+   });
   });
  };
  /**
   *
-  * @returns {Array}
+  * @returns {Promise<import("src/models/channeljob").ChannelJob[]>}
   */
- getAllJobs = () => {
+ getAllJobs() {
   return this.storageJobs.findAll({ job_type: JokeApiJobSchedule.TYPE });
- };
+ }
  /**
   *
   * @param {string} channel_id
   * @param {object} config
-  * @returns {void}
   */
- subscribe = (channel_id, config) => {
-  const scheduleJob = new JokeApiJobSchedule(channel_id, config);
-  if (this.storageJobs.isAsync()) {
-   return (async () => {
-    return this.storageJobs.insertIfNotFind(scheduleJob);
-   })();
-  }
-  return this.storageJobs.insertIfNotFind(scheduleJob);
- };
- /**
-  *
-  * @param {string} cronExpression
-  * @param {function} cb
-  * @returns {void}
-  */
- schedule = (cronExpression, cb) => {
-  nodeSchedule.scheduleJob(cronExpression, cb);
- };
+ async subscribe(channel_id, config) {
+  return await this.storageJobs.insertIfNotFind(
+   new JokeApiJobSchedule(channel_id, config)
+  );
+ }
 }

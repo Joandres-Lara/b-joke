@@ -7,64 +7,81 @@ export default class PostgresStorageJobs extends PostgresStorage {
  }
  /**
   *
-  * @returns {Sequelize.Model}
   */
  getModelJob() {
   return this.orm.getModel("ChannelJob");
  }
  /**
   *
-  * @returns {Models.ChannelJob}
+  * @param {*} query
+  * @returns
   */
- async insert({ job_type, channel_id, config }) {
-  const ChannelJob = this.getModelJob();
-  return await ChannelJob.create({ job_type, channel_id, config });
+ async queryFindAll(query) {
+  return await this.getModelJob().findAll(query);
  }
  /**
   *
-  * @returns {Promise<boolean|Models.ChannelJob>}
+  * @param {import("sequelize").NonNullFindOptions} query
+  * @returns
   */
- async insertIfNotFind({ channel_id, job_type, config }) {
-  if (await this.find({ job_type, channel_id })) {
+ async queryFindOne(query) {
+  return await this.getModelJob().findOne(query);
+ }
+ /**
+  * @param {import("src/models/channeljob").ChannelProperties}
+  * @returns {import("src/models/channeljob").ChannelJob}
+  */
+ async insert({ job_type, channel_id, config }) {
+  const ChannelJob = this.getModelJob();
+  const model_created = await ChannelJob.create({
+   job_type,
+   channel_id,
+   config,
+  });
+  this.dispatchOnCreate(model_created);
+  return model_created;
+ }
+ /**
+  * @param {import("src/models/channeljob").ChannelProperties} arg[0]
+  * @returns {Promise<false|import("src/models/channeljob").ChannelJob>}
+  */
+ async insertIfNotFind({ channel_id, job_type, user_id = null, config }) {
+  if (await this.find({ job_type, channel_id, user_id })) {
    return false;
   }
-  return await this.insert({ job_type, channel_id, config });
+  return await this.insert({ job_type, channel_id, user_id, config });
  }
 
- async findAndDelete({ channel_id, job_type }){
+ async findAndDelete({ channel_id, job_type }) {
   const job = await this.find({ job_type, channel_id });
-  if(!job){
+  if (!job) {
    return;
   }
   return await job.destroy();
  }
  /**
-  *
+  * @param {Partial<import("src/models/channeljob").ChannelProperties>} properties
   * @returns {Promise<Model|null>}
   */
- async find({ job_type, channel_id }) {
-  return await this.getModelJob().findOne({
+ async find(properties) {
+  return await this.queryFindOne({
    where: {
-    [Op.and]: [{ job_type }, { channel_id }],
+    [Op.and]: Object.entries(properties).map(([key, value]) => [
+     { [key]: value },
+    ]),
    },
   });
  }
  /**
-  *
-  * @param {*} query
-  * @returns
+  * @param {Partial<import("src/models/channeljob").ChannelProperties} properties
+  * @returns {Promise<Model[]>}
   */
- async queryFindAll(query){
-  return await this.getModelJob().findAll(query);
- }
- /**
-  *
-  * @returns {Promise<Array<Model>>}
-  */
- async findAll({ job_type }) {
+ async findAll(properties) {
   return await this.queryFindAll({
    where: {
-    [Op.and]: [{ job_type }],
+    [Op.and]: Object.entries(properties).map(([key, value]) => [
+     { [key]: value },
+    ]),
    },
   });
  }
@@ -73,7 +90,7 @@ export default class PostgresStorageJobs extends PostgresStorage {
   * @param {*} channel_id
   * @returns
   */
- async findAllByChannel(channel_id){
+ async findAllByChannel(channel_id) {
   return await this.queryFindAll({
    where: {
     [Op.and]: [{ channel_id }],

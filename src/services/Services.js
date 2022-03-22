@@ -1,16 +1,23 @@
 import JokeApiService from "./JokeApiService";
 import NewsApiService from "./NewsApiService";
 import RecordService from "./RecordService";
-
+/**
+ * @typedef {Object} Service
+ * @property {() => void} init
+ * @property {(logger: import("@app/Logger").default) => this} useLogger
+ */
 export default class Services {
  /**
   *
   * @param {*} bot
   * @returns {Services}
   */
- static configure = (...args) => new Services(...args).init();
+ static async configure(...args) {
+  await new Services(...args).init();
+ }
  /**
   *
+  * @type {Service[]}
   */
  services = [];
  /**
@@ -25,5 +32,12 @@ export default class Services {
   );
  }
 
- init = () => this.services.forEach((service) => service.init());
+ async init() {
+  return Promise.all(
+   this.services.map(async (service) => {
+    service.useLogger();
+    await service.init();
+   })
+  );
+ }
 }
