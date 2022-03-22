@@ -11,8 +11,6 @@ if (!fs.existsSync(fileLastVersion)) {
 } else {
  lastVersion = fs.readFileSync(fileLastVersion).toString();
 }
-
-fs.writeFileSync(fileLastVersion, currentVersion);
 /**
  *
  * @param {import("eris").CommandClient} bot
@@ -20,6 +18,7 @@ fs.writeFileSync(fileLastVersion, currentVersion);
 export default function newVersionDetect(bot) {
  bot.on("ready", async () => {
   if (currentVersion !== lastVersion) {
+   fs.writeFileSync(fileLastVersion, currentVersion);
    const guilds = bot.guilds;
 
    guilds.forEach(async (guild) => {
