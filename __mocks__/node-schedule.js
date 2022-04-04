@@ -8,9 +8,11 @@ const { call, register, callFilter } = pubSub(
 
 const mockSchedule = jest.fn(register);
 const mockCall = jest.fn((cronExpression, ...args) => callFilter(({ cronExpression: c }) => c === cronExpression, ...args))
+const callAll = call;
 
 module.exports = {
  scheduleJob: mockSchedule,
  call: mockCall,
+ callAll,
  RecurrenceRule: original.RecurrenceRule
 }

@@ -3,6 +3,7 @@ module.exports = {
   {
    name: "b-joke",
    script: "dist/index.js",
+   args: "--desactive-log",
    instances: "1",
    watch: ".",
    env: {

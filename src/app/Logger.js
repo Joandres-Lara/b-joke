@@ -1,18 +1,33 @@
 import chalk from "chalk";
+import { inspect } from "util";
 
 export default class Logger {
+ constructor(){
+  this.isActivated = !process.argv.includes("--desactive-log")
+ }
+
+ object(obj) {
+  return inspect(obj, { colors: true, depth: null });
+ }
  /**
   *
   * @param {...string} msgs
   */
  log(...msgs) {
-  console.log(...msgs.map((msg) => chalk.red(msg)));
+  this.isActivated && console.log(...msgs.map((msg) => chalk.red(msg)));
  }
  /**
   *
   * @param  {...string} msgs
   */
- info(...msgs){
-  console.log(...msgs.map((msg) => chalk.green(msg)));
+ info(...msgs) {
+  this.isActivated && console.log(...msgs.map((msg) => chalk.green(msg)));
+ }
+ /**
+  *
+  * @param  {...any} msgs
+  */
+ default(...msgs) {
+  this.isActivated && console.log(...msgs);
  }
 }

@@ -1,6 +1,7 @@
 import RecordJobs from "@jobs/RecordJobs";
 import { advanceTo } from "jest-date-mock";
 import DefaultStorageJobs from "@app/Storages/DefaultStorage";
+import nodeSchedule from "node-schedule";
 import Eris from "eris";
 
 describe("@jobs/JobBot", () => {

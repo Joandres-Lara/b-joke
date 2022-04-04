@@ -42,7 +42,7 @@ export default class PostgresStorageJobs extends PostgresStorage {
   return model_created;
  }
  /**
-  * @param {import("src/models/channeljob").ChannelProperties} arg[0]
+  * @param {import("src/models/channeljob").ChannelProperties}
   * @returns {Promise<false|import("src/models/channeljob").ChannelJob>}
   */
  async insertIfNotFind({ channel_id, job_type, user_id = null, config }) {

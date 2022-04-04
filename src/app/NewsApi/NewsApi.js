@@ -3,7 +3,9 @@ import NewsRSSExpansion from "./NewsRSSExpansion";
 export default class NewsApi {
  /**
   *
-  * @param {*} options
+  * @param {import("eris").CommandClient} bot
+  * @param {import("express").Application} appExpress
+  * @param {import("@app/Storages/PostgresStorageManager").default} storageManager
   */
  constructor(bot, appExpress, storageManager) {
   this.rssExpansion = new NewsRSSExpansion();
@@ -19,7 +21,6 @@ export default class NewsApi {
  /**
   *
   * @param {string} channel_id
-  * @returns {Promise}
   */
  async getNewsItem(guild_id){
   const noticie = await this.storageNews.findFirstNoticieNotSend(

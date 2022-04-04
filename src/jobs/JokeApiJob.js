@@ -20,14 +20,8 @@ export default class JokeApiJob extends BaseJob {
   * @returns {void}
   */
  async initJobs(){
-  this.schedule(JokeApiJob.DEFAULT_SCHEDULE_TIMER, async () => {
-   const joke = await new JokeApi().getJoke();
-   let jobs = await this.getAllJobs();
-   jobs.forEach(({ channel_id }) => {
-    const message = new JokeMessageDaily(joke);
-    this.bot.createMessage(channel_id, message.toObject());
-   });
-  });
+  this.schedule(JokeApiJob.DEFAULT_SCHEDULE_TIMER, this.sendJokeToSubscribeChannels.bind(this));
+  this.randomScheduleOfDay(this.sendJokeToSubscribeChannels.bind(this));
  };
  /**
   *
@@ -35,6 +29,15 @@ export default class JokeApiJob extends BaseJob {
   */
  getAllJobs() {
   return this.storageJobs.findAll({ job_type: JokeApiJobSchedule.TYPE });
+ }
+
+ async sendJokeToSubscribeChannels(){
+  const joke = await new JokeApi().getJoke();
+  let jobs = await this.getAllJobs();
+  jobs.forEach(({ channel_id }) => {
+   const message = new JokeMessageDaily(joke);
+   this.bot.createMessage(channel_id, message.toObject());
+  });
  }
  /**
   *

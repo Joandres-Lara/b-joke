@@ -9,7 +9,9 @@ import Eris from "eris";
 
 jest.mock("@app/JokeApi/JokeApi");
 
-let instanteJokeApiJob,
+let
+ /** @type {import("@jobs/JokeApiJob").default} */
+ instanteJokeApiJob,
  todoStorage,
  mockInsertStorage,
  mockFindAll,
@@ -32,6 +34,8 @@ describe("new JokeApiJob()", () => {
   instanteJokeApiJob = new JokeApiJob(new Eris.CommandClient(), null, {
    get: () => instanceStorage,
   });
+
+  instanteJokeApiJob.useLogger();
  });
 
  test("Insert to storage `JokeApiJobSchedule`", async () => {
