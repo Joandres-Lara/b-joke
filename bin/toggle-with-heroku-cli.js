@@ -9,7 +9,8 @@ async function exec(command) {
   });
  });
 }
-export default function ms({
+
+function ms({
  years = 0,
  days = 0,
  hours = 0,
@@ -36,7 +37,7 @@ export default function ms({
 
 const MATCH_STATUS_OFF = "No dynos on";
 
-(async () => {
+export default (async () => {
  try {
   let timerHerokuResponse;
   /** @type {string} */
@@ -49,6 +50,7 @@ const MATCH_STATUS_OFF = "No dynos on";
        "La petición ha tardado demasiado, revisa si la aplicación no necesita el token para iniciar sesión"
       )
      );
+     process.exit();
     }, 10000);
    }),
   ]);
@@ -82,16 +84,11 @@ const MATCH_STATUS_OFF = "No dynos on";
    result = await exec("heroku ps:scale worker=0");
    console.log("Stop bot B-Joke");
   } else {
-   console.info({
-    dateEndOfMonth: dateEndOfMonth.toString(),
-    dateLeftCalculateWithMiliseconds:
-     dateLeftCalculateWithMiliseconds.toString(),
-    isAfter: isAfter(dateEndOfMonth, dateLeftCalculateWithMiliseconds)
-   });
    console.info(
     "No es necesario apagar el bot, todo estará bien si se queda encendido"
    );
   }
+  return result;
  } catch (e) {
   console.error(e);
  }
