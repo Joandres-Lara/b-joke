@@ -15,7 +15,7 @@
     "posttest": "npm run db:migrate-rollback -- --env=test",
     "test": "jest --coverage || true",
     "test:ci": "jest --ci --runInBand",
-    "b-joke:toggle": "npx babel-node bin/toggle-with-heroku-cli.js"
+    "b-joke:toggle": "npx babel-node bin/index.js"
   },
   "engines": {
     "node": ">= 14.17.0",

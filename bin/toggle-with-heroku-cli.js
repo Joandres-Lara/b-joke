@@ -37,7 +37,7 @@ function ms({
 
 const MATCH_STATUS_OFF = "No dynos on";
 
-export default (async () => {
+export default async function toggleWithHerokuCli(){
  try {
   let timerHerokuResponse;
   /** @type {string} */
@@ -92,4 +92,4 @@ export default (async () => {
  } catch (e) {
   console.error(e);
  }
-})();
+};
