@@ -56,6 +56,30 @@ export default class BaseJob {
  }
  /**
   *
+  * @returns {import("node-schedule").RecurrenceRule}
+  */
+ createRuleWithDefaultTimezone({
+  year,
+  month,
+  date,
+  minute,
+  second,
+  dayOfWeek,
+  hour,
+ }) {
+  return new RecurrenceRule(
+   year,
+   month,
+   date,
+   dayOfWeek,
+   hour,
+   minute,
+   second,
+   "America/Mexico_City"
+  );
+ }
+ /**
+  *
   * @param {{() => void}} cb
   * @param {boolean=} initial
   */

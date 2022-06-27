@@ -106,59 +106,99 @@ export default class ManualJob extends BaseJob {
   */
  initSpotifyRecord() {
   // Todos los días 10
-  this.schedule("0 01 12 11 * *", () => {
-   eachOwnChannels(this.bot, (channel) => {
-    this.sendMessage(
-     channel.id,
-     new Message(
-      "Se aproxima el día para pagar el Spotify, ¿a quién tengo que prestarle dinero?"
-     )
-    );
-   });
-  });
+  this.schedule(
+   this.createRuleWithDefaultTimezone({
+    second: 0,
+    minute: 0,
+    hour: 12,
+    date: 11,
+   }),
+   () => {
+    eachOwnChannels(this.bot, (channel) => {
+     this.sendMessage(
+      channel.id,
+      new Message(
+       "Se aproxima el día para pagar el Spotify, ¿a quién tengo que prestarle dinero?"
+      )
+     );
+    });
+   }
+  );
 
-  this.schedule("0 0 12 12 * *", () => {
-   eachOwnChannels(this.bot, (channel) => {
-    this.sendMessage(
-     channel.id,
-     new Message(
-      "3 días para pagar el Spotify, vender tu cuerpo es una buena idea para conseguir el dinero, yo nada más digo"
-     )
-    );
-   });
-  });
+  this.schedule(
+   this.createRuleWithDefaultTimezone({
+    second: 0,
+    minute: 0,
+    hour: 12,
+    date: 12,
+   }),
+   () => {
+    eachOwnChannels(this.bot, (channel) => {
+     this.sendMessage(
+      channel.id,
+      new Message(
+       "3 días para pagar el Spotify, vender tu cuerpo es una buena idea para conseguir el dinero, yo nada más digo"
+      )
+     );
+    });
+   }
+  );
 
-  this.schedule("0 0 12 13 * *", () => {
-   eachOwnChannels(this.bot, (channel) => {
-    this.sendMessage(
-     channel.id,
-     new Message(
-      "2 días para pagar el Spotify, ¿qué tienes en esa bolsa de atrás? No importa, mientras tengas el dinero."
-     )
-    );
-   });
-  });
+  this.schedule(
+   this.createRuleWithDefaultTimezone({
+    second: 0,
+    minute: 0,
+    hour: 12,
+    date: 13,
+   }),
+   () => {
+    eachOwnChannels(this.bot, (channel) => {
+     this.sendMessage(
+      channel.id,
+      new Message(
+       "2 días para pagar el Spotify, ¿qué tienes en esa bolsa de atrás? No importa, mientras tengas el dinero."
+      )
+     );
+    });
+   }
+  );
 
-  this.schedule("0 0 12 14 * *", () => {
-   eachOwnChannels(this.bot, (channel) => {
-    this.sendMessage(
-     channel.id,
-     new Message(
-      "Mañana se paga el Spotify, espero que tengas el dinero, si no, espero que te gusten los lugares oscuros."
-     )
-    );
-   });
-  });
+  this.schedule(
+   this.createRuleWithDefaultTimezone({
+    second: 0,
+    minute: 0,
+    hour: 12,
+    date: 14,
+   }),
+   () => {
+    eachOwnChannels(this.bot, (channel) => {
+     this.sendMessage(
+      channel.id,
+      new Message(
+       "Mañana se paga el Spotify, espero que tengas el dinero, si no, espero que te gusten los lugares oscuros."
+      )
+     );
+    });
+   }
+  );
 
-  this.schedule("0 0 12 15 * *", () => {
-   eachOwnChannels(this.bot, (channel) => {
-    this.sendMessage(
-     channel.id,
-     new Message(
-      "Llegó la hora de pagar el Spotify, quien no tenga el dinero, que ni salga, y ni se aparezca por aquí."
-     )
-    );
-   });
-  });
+  this.schedule(
+   this.createRuleWithDefaultTimezone({
+    second: 0,
+    minute: 0,
+    hour: 12,
+    date: 15,
+   }),
+   () => {
+    eachOwnChannels(this.bot, (channel) => {
+     this.sendMessage(
+      channel.id,
+      new Message(
+       "Llegó la hora de pagar el Spotify, quien no tenga el dinero, que ni salga, y ni se aparezca por aquí."
+      )
+     );
+    });
+   }
+  );
  }
 }
