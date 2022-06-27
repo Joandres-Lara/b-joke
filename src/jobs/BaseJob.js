@@ -1,7 +1,7 @@
 import Logger from "@app/Logger";
 import Message from "@app/Messages/Message";
 import randomNumberBetween from "@app/util/random-number-between";
-import nodeSchedule from "node-schedule";
+import nodeSchedule, { RecurrenceRule } from "node-schedule";
 import { addDays } from "date-fns";
 
 export default class BaseJob {
@@ -59,23 +59,25 @@ export default class BaseJob {
   * @param {{() => void}} cb
   * @param {boolean=} initial
   */
- randomScheduleOfDay(cb, initial = true) {
+ randomScheduleOfEachDay(cb, initial = true) {
   const randomDateOfDay = initial ? new Date() : addDays(new Date(), 1);
-  randomDateOfDay.setHours(
-   randomNumberBetween(initial ? randomDateOfDay.getHours() : 9, 23)
+  const rule = new RecurrenceRule();
+  rule.tz = "America/Mexico_City";
+  rule.hour = randomNumberBetween(initial ? randomDateOfDay.getHours() : 9, 23);
+  rule.minute = randomNumberBetween(
+   initial ? randomDateOfDay.getMinutes() : 0,
+   59
   );
-  randomDateOfDay.setMinutes(
-   randomNumberBetween(initial ? randomDateOfDay.getMinutes() : 0, 59)
-  );
-  randomDateOfDay.setSeconds(
-   randomNumberBetween(initial ? randomDateOfDay.getSeconds() : 0, 59)
+  rule.second = randomNumberBetween(
+   initial ? randomDateOfDay.getSeconds() : 0,
+   59
   );
 
   this.logger.log(`Append schedule to random date ${randomDateOfDay}`);
 
-  nodeSchedule.scheduleJob(randomDateOfDay, () => {
+  this.schedule(randomDateOfDay, () => {
    cb();
-   this.randomScheduleOfDay(cb, false);
+   this.randomScheduleOfEachDay(cb, false);
   });
  }
  /**
@@ -87,9 +89,19 @@ export default class BaseJob {
   * @param {Message|string} message
   */
  sendMessage(channel_id, message) {
+  /** @type {string|import("eris").Message} */
+  let renderMessage = message;
+
   if (message instanceof Message) {
-   message = message.toObject();
+   renderMessage = message.toObject();
   }
-  this.bot.createMessage(channel_id, message);
+
+  if (typeof message !== "string") {
+   this.logger.info(`Send message: ${renderMessage.content} to: ${channel_id}`);
+  } else {
+   this.logger.info(`Send message: ${renderMessage} to: ${channel_id}`);
+  }
+
+  this.bot.createMessage(channel_id, renderMessage);
  }
 }

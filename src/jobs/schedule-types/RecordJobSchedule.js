@@ -1,10 +1,10 @@
+import { isValid } from "date-fns";
+
 /**
  * @typedef {string} ActionRecordJobSchedule
  * @typedef {string|number|Date} CronJobSchedule
  * @typedef {{action: ActionRecordJobSchedule; cron: CronJobSchedule;}} ConfigRecordJobSchedule
  */
-
-import { isValid } from "date-fns";
 
 export default class RecordJobSchedule {
  /** @type {"bot-job-v1"} */

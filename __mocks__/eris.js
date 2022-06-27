@@ -1,4 +1,5 @@
 const pubSub = require("../util-tests/pattern-publisher-subscriber");
+const combineFns = require("@app/util/combine-fns").default;
 
 const {
  register: registerOn,
@@ -12,7 +13,7 @@ const {
 const {
  register: registerCommand,
  call: callCommand,
- callFilter: callFilterCommand
+ callFilter: callFilterCommand,
 } = pubSub(
  (command, cb) => ({ command, cb }),
  ({ cb }) => cb
@@ -30,22 +31,36 @@ const mocked = jest.fn(() => {
 });
 
 mocked.register = mocked.on = mockRegisterOn;
-mocked.call = mocked.dispatch = jest.fn((event, ...args) => callFilterOn(({event: e}) => (e === event), ...args));
+mocked.call = mocked.dispatch = jest.fn((event, ...args) =>
+ callFilterOn(({ event: e }) => e === event, ...args)
+);
 mocked.createMessage = mockCreateMessage;
 
 const mockRegisterCommand = jest.fn(registerCommand);
+/**
+ * This return a list channels
+ */
+const mockRestBuildChannels = jest.fn(() => []);
 
 const mockedCommandClient = jest.fn(() => {
  return {
   registerCommand: mockRegisterCommand,
-  createMessage: mockCreateMessage
- }
+  createMessage: mockCreateMessage,
+  guilds: [897878783],
+  getRESTGuildChannels: mockRestBuildChannels,
+ };
 });
 
 mockedCommandClient.registerCommand = mockRegisterCommand;
-mockedCommandClient.dispatchCommand = jest.fn((command, ...args) => callFilterCommand(({ command: c }) => c === command, ...args));
+mockedCommandClient.dispatchCommand = jest.fn((command, ...args) =>
+ callFilterCommand(({ command: c }) => c === command, ...args)
+);
 mockedCommandClient.createMessage = mockCreateMessage;
 
 mocked.CommandClient = mockedCommandClient;
+
+mocked.configureCommandClient = (mock) => {
+ mocked.CommandClient = jest.fn(combineFns(mockedCommandClient, mock))
+};
 
 module.exports = mocked;

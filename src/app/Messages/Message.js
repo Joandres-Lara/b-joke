@@ -1,10 +1,23 @@
 export default class Message{
+ /**
+  * @type {string}
+  */
+ message = "";
+ /**
+  *
+  * @param {string} message
+  */
+ constructor(message){
+  this.message = message;
+ }
   /**
    *
    * @returns
    */
   toObject() {
    return {
+    content: this.message,
+    tts: false
    };
   }
   /**
@@ -12,6 +25,6 @@ export default class Message{
    * @returns {string}
    */
   toString() {
-   return "";
+   return message;
   }
 }

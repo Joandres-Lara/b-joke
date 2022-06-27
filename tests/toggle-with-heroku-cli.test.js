@@ -1,6 +1,7 @@
 import { exec, exec as execMock } from "child_process";
 import { isAfter as isAfterMock } from "date-fns";
 import toggleWithHerokuCli from "../bin/toggle-with-heroku-cli";
+import readLine from "readline";
 
 jest.mock("child_process", () => {
  return {
@@ -13,6 +14,17 @@ jest.mock("date-fns", () => {
  return {
   isAfter: jest.fn(() => false),
   endOfMonth: originalEndOfMonth,
+ };
+});
+
+jest.mock("readline", () => {
+ const mockPrompt = {
+  question: jest.fn((...[, callback]) => callback()),
+  close: jest.fn(),
+ };
+
+ return {
+  createInterface: jest.fn(() => mockPrompt),
  };
 });
 
@@ -109,13 +121,17 @@ describe("Toggle with heroku cli", () => {
 
  test("Throw error when excend limit time response Heroku cli", async () => {
   const spierError = jest.spyOn(console, "error");
-  spierError.mockImplementation(() => {})
+  spierError.mockImplementation(() => {});
   execMock.mockImplementation(() => {});
 
   const promiseToggle = toggleWithHerokuCli();
   jest.runAllTimers();
   await promiseToggle;
 
-  expect(spierError).toHaveBeenCalledWith(new Error("La petición ha tardado demasiado, revisa si la aplicación no necesita el token para iniciar sesión"))
+  expect(spierError).toHaveBeenCalledWith(
+   new Error(
+    "La petición ha tardado demasiado, revisa si la aplicación no necesita el token para iniciar sesión"
+   )
+  );
  });
 });

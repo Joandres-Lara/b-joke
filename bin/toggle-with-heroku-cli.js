@@ -1,8 +1,23 @@
 import { exec as legacyExec } from "child_process";
 import { endOfMonth, isAfter } from "date-fns";
+import readLine from "readline";
 
-async function exec(command) {
- return await new Promise((resolve, reject) => {
+function waitType() {
+ const prompt = readLine.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+ });
+
+ return new Promise((resolve) => {
+  prompt.question("Type enter by exit", () => {
+   prompt.close();
+   resolve(true);
+  });
+ });
+}
+
+function exec(command) {
+ return new Promise((resolve, reject) => {
   legacyExec(command, (error, stout) => {
    if (error) return reject(error);
    return resolve(stout);
@@ -10,13 +25,7 @@ async function exec(command) {
  });
 }
 
-function ms({
- years = 0,
- days = 0,
- hours = 0,
- minutes = 0,
- seconds = 0,
-}) {
+function ms({ years = 0, days = 0, hours = 0, minutes = 0, seconds = 0 }) {
  const transformers = {
   years: 1000 * 60 * 60 * 24 * 365,
   days: 1000 * 60 * 60 * 24,
@@ -37,7 +46,7 @@ function ms({
 
 const MATCH_STATUS_OFF = "No dynos on";
 
-export default async function toggleWithHerokuCli(){
+export default async function toggleWithHerokuCli() {
  try {
   let timerHerokuResponse;
   /** @type {string} */
@@ -79,7 +88,7 @@ export default async function toggleWithHerokuCli(){
   if (isOff) {
    result = await exec("heroku ps:scale worker=1");
    console.log("Start bot B-Joke");
-  } else if(isAfter(dateEndOfMonth, dateLeftCalculateWithMiliseconds)) {
+  } else if (isAfter(dateEndOfMonth, dateLeftCalculateWithMiliseconds)) {
    console.log(`Not found ${MATCH_STATUS_OFF} in ${stoutHerokuStatus}`);
    result = await exec("heroku ps:scale worker=0");
    console.log("Stop bot B-Joke");
@@ -88,8 +97,11 @@ export default async function toggleWithHerokuCli(){
     "No es necesario apagar el bot, todo estará bien si se queda encendido"
    );
   }
+
+  await waitType();
+  console.log(result);
   return result;
  } catch (e) {
   console.error(e);
  }
-};
+}

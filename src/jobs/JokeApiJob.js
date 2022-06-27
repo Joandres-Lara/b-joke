@@ -21,7 +21,7 @@ export default class JokeApiJob extends BaseJob {
   */
  async initJobs(){
   this.schedule(JokeApiJob.DEFAULT_SCHEDULE_TIMER, this.sendJokeToSubscribeChannels.bind(this));
-  this.randomScheduleOfDay(this.sendJokeToSubscribeChannels.bind(this));
+  this.randomScheduleOfEachDay(this.sendJokeToSubscribeChannels.bind(this));
  };
  /**
   *

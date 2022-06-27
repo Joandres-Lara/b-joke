@@ -17,7 +17,7 @@ describe("new BaseJob()", () => {
 
  test("Test random schedule", () => {
   const mockCallbackSchedule = jest.fn();
-  instanceBaseJob.randomScheduleOfDay(mockCallbackSchedule);
+  instanceBaseJob.randomScheduleOfEachDay(mockCallbackSchedule);
 
   expect(mockCallbackSchedule).not.toHaveBeenCalled();
   expect(nodeSchedule.scheduleJob).toHaveBeenCalledTimes(1);

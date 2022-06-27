@@ -17,7 +17,7 @@ export default class NewsJob extends BaseJob {
  }
 
  async init() {
-  this.randomScheduleOfDay(this.sendNews.bind(this));
+  this.randomScheduleOfEachDay(this.sendNews.bind(this));
  }
 
  async sendNews() {
