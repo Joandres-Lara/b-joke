@@ -3,23 +3,23 @@ import { config as configDotEnv } from "dotenv";
 
 configDotEnv();
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.DATABASE_URL || "";
 
 // https://bleepcoder.com/es/sequelize/20454794/can-t-use-ssl-with-postgres
 let url = new URL(DATABASE_URL);
 
-const sharedConfig = {
+const config = {
  username: url.username,
  password: url.password,
  host: url.hostname,
  port: url.port,
  database: url.pathname.replace("/", ""),
  dialect: "postgres",
-}
+};
 
 module.exports = {
  production: {
-  ...sharedConfig,
+  ...config,
   dialectOptions: {
    // https://stackoverflow.com/questions/58965011/sequelizeconnectionerror-self-signed-certificate
    ssl: {
@@ -44,6 +44,12 @@ module.exports = {
   port: process.env.PRODUCTION_DATABASE_PORT,
   database: process.env.PRODUCTION_DATABASE_NAME,
   dialect: "postgres",
-  logging: false
+  logging: false,
+  dialectOptions: {
+   ssl: {
+    require: true,
+    rejectUnauthorized: false
+   }
+  }
  }
 };

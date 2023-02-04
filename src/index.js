@@ -1,6 +1,6 @@
+import app from "./app";
 import appExpress from "./http/app-express";
 import bot from "./eris-bot/bot";
-import app from "./app";
 
 (async () => {
  try{
