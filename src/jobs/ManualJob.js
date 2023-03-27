@@ -91,13 +91,18 @@ export default class ManualJob extends BaseJob {
   // of channel id localization.
   this.randomScheduleOfEachDay(() => {
    // Estos mensajes son para los recordarios de la página de Facebook
-   eachOwnChannels(this.bot, (channel) => {
+   eachOwnChannels(this.bot, async (channel) => {
     const message =
      ManualJob.default_messages[
       randomNumberBetween(0, ManualJob.default_messages.length)
      ];
 
-    this.sendMessage(channel.id, message);
+     try{
+      await this.sendMessage(channel.id, message);
+     }catch(e){
+      console.error(e);
+     }
+
    });
   });
  }

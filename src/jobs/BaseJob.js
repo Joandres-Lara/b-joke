@@ -99,8 +99,13 @@ export default class BaseJob {
 
   this.logger.log(`Append schedule to random date ${randomDateOfDay}`);
 
-  this.schedule(randomDateOfDay, () => {
-   cb();
+  this.schedule(randomDateOfDay, async () => {
+   try{
+    await cb();
+   } catch(e){
+    console.error(e);
+    return;
+   }
    this.randomScheduleOfEachDay(cb, false);
   });
  }

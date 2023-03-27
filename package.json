@@ -52,6 +52,7 @@
     "@babel/node": "^7.14.7",
     "@babel/register": "^7.14.5",
     "@types/jest": "^27.4.1",
+    "babel-cli": "^6.26.0",
     "jest": "27.4",
     "jest-cli": "27.4",
     "jest-date-mock": "^1.0.8",
