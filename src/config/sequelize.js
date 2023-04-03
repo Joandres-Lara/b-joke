@@ -38,18 +38,12 @@ module.exports = {
   dialect: "postgres"
  },
  test: {
-  username: process.env.PRODUCTION_DATABASE_USERNAME,
-  password: process.env.PRODUCTION_DATABASE_PASSWORD,
-  host: process.env.PRODUCTION_DATABASE_HOST,
-  port: process.env.PRODUCTION_DATABASE_PORT,
-  database: process.env.PRODUCTION_DATABASE_NAME,
+  username: process.env.DEVELOPMENT_DATABASE_USERNAME,
+  password: process.env.DEVELOPMENT_DATABASE_PASSWORD,
+  host: process.env.DEVELOPMENT_DATABASE_HOST,
+  port: process.env.DEVELOPMENT_DATABASE_PORT,
+  database: process.env.DEVELOPMENT_DATABASE_NAME,
   dialect: "postgres",
   logging: false,
-  dialectOptions: {
-   ssl: {
-    require: true,
-    rejectUnauthorized: false
-   }
-  }
  }
 };
