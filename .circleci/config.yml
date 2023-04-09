@@ -1,11 +1,10 @@
 version: 2.1
-orbs:
-  executors:
-    b_joke_machine:
-      docker:
-        - image: cimg/node:14
-        - image: cimg/postgres:latest
-      resource_class: large
+executors:
+  b_joke_machine:
+    docker:
+      - image: cimg/node:14
+      - image: cimg/postgres:latest
+    resource_class: large
 jobs:
   tests:
     executor: b_joke_machine
