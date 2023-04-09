@@ -13,6 +13,7 @@ jobs:
       - restore_cache:
           keys:
             - node-{{ checksum "package-lock.json" }}
+      - run: cp .circleci/.env.circleci .env
       - run: npm ci
       - save_cache:
           key: node-{{ checksum "package-lock.json" }}
@@ -20,7 +21,6 @@ jobs:
             - /home/circleci/.npm
             - node_modules
             - ~/.yarn
-      - run: cp .circleci/.env.circleci .env
       - run: npm run test
 workflows:
   version: 2
