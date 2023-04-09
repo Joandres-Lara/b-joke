@@ -5,7 +5,6 @@ const defaultMaped = (cb) => cb;
  *
  * @param {function} mapedRegister
  * @param {function} mapedCall
- * @returns {object}
  */
 module.exports = (mapedRegister = defaultMaped, mapedCall = defaultMaped) => {
 
