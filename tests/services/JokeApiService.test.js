@@ -9,7 +9,7 @@ import {
  JOKE_COMMAND_DESCRIPTION,
 } from "@services/JokeApiService/descriptor-commands";
 
-jest.mock("@app/JokeApi/JokeApi");
+jest.mock("@app/JokeApi/joke-api");
 jest.mock("@app/Storages/DefaultStorage");
 
 beforeEach(() => {

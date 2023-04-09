@@ -7,7 +7,7 @@ import DefaultStorageJobs from "@app/Storages/DefaultStorage";
 import schedule from "node-schedule";
 import Eris from "eris";
 
-jest.mock("@app/JokeApi/JokeApi");
+jest.mock("@app/JokeApi/joke-api");
 
 let
  /** @type {import("@jobs/JokeApiJob").default} */
