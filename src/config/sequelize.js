@@ -4,8 +4,8 @@ import { config as configDotEnv } from "dotenv";
 configDotEnv();
 
 const DATABASE_URL = process.env.DATABASE_URL || "";
-const DATABASE_SSL = process.env.DATABASE_SSL || false;
-const DATABASE_LOGGING = process.env.DATABASE_LOGGING.includes("false") ? false : true;
+const DATABASE_SSL = (process.env.DATABASE_SSL || "").includes("false") ? false : true;
+const DATABASE_LOGGING = (process.env.DATABASE_LOGGING || "").includes("false") ? false : true;
 
 // https://bleepcoder.com/es/sequelize/20454794/can-t-use-ssl-with-postgres
 let url = new URL(DATABASE_URL);
