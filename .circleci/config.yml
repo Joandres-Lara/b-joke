@@ -3,7 +3,7 @@ executors:
   b_joke_machine:
     docker:
       - image: cimg/node:14.21
-      - image: cimg/postgres:latest
+      - image: cimg/postgres:14.7
     resource_class: large
 jobs:
   tests:
