@@ -1,3 +1,7 @@
+require("dotenv").config();
+
+console.log(process.env.DATABASE_URL)
+
 module.exports = {
  apps: [
   {
@@ -11,7 +15,6 @@ module.exports = {
    },
    env_production: {
     NODE_ENV: "production",
-    DATABASE_URL: process.env.DATABASE_URL
    },
   },
  ],
