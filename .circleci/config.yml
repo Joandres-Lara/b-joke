@@ -25,9 +25,9 @@ jobs:
             - node_modules
             - ~/.yarn
       - run:
-        - cp .circleci/.env.circleci .env
+          - cp .circleci/.env.circleci .env
       - run:
-        - npm run test
+          - npm run test
 workflows:
   version: 2
   b_joke_application:
