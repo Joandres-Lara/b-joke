@@ -2,7 +2,7 @@ version: 2.1
 executors:
   b_joke_machine:
     docker:
-      - image: cimg/node:14
+      - image: cimg/node:14.21
       - image: cimg/postgres:latest
     resource_class: large
 jobs:
