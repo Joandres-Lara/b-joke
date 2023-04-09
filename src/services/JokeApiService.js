@@ -12,7 +12,7 @@ import {
 export default class JokeApiService extends ServiceBot {
  /** @type {import("@app/Storages/StorageJobs/PostgresStorageJobs").default} */
  storageJobs;
- /** @type {import("@app/JokeApi/JokeApi").default} */
+ /** @type {import("@app/JokeApi/joke-api").default} */
  api;
  /**
   *

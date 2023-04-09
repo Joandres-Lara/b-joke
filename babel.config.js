@@ -12,6 +12,7 @@ module.exports = (api) => {
     },
     useBuiltIns: "usage"
    }),
+   require("@babel/preset-typescript"),
   ],
   plugins: [
    require("@babel/plugin-transform-runtime"),

@@ -9,7 +9,7 @@ export default class JokeApiJson {
  }
  /**
   *
-  * @param {function<void>} cb
+  * @param {() => void} [cb]
   * @returns {Promise<string>}
   */
  getJoke = async (cb) => {

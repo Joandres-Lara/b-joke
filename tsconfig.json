@@ -4,11 +4,12 @@
     "lib": [
       "ESNext"
     ],
+    "outDir": "dist",
     "allowJs": true,
     "skipDefaultLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+    "noEmit": false,
     "esModuleInterop": true,
     "module": "ESNext",
     "moduleResolution": "node",
@@ -32,6 +33,7 @@
     }
   },
   "exclude": [
-    "node_modules", "dist"
+    "node_modules", 
+    "dist"
   ]
 }
