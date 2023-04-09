@@ -1,1 +1,1 @@
-export { default as default } from "./JokeApi";
+export { default as default } from "./joke-api";
