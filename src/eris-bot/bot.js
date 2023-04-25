@@ -5,7 +5,7 @@ const botOptions = {
 };
 
 const commandOptions = {
- description: "Bot for jokes",
+ description: "Un bot hecho para uso de nuestro servidor personal",
  owner: "@creicyguempleys",
  prefix: "!",
 };

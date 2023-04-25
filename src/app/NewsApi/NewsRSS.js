@@ -1,5 +1,5 @@
 import nodeFetch from "node-fetch";
-import XMLParserAdapter from "../XMLParserAdapter";
+import XMLParserAdapter from "../xml-parser-adapter";
 import NewsItem from "./NewsItem";
 
 export default class NewsRSS{

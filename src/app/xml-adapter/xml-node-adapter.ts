@@ -1,13 +1,18 @@
-export default class XMLNodeAdapter {
+export type NodeAdaptable<T> = T extends Record<infer K, infer P> ? Record<K, P> : T extends Array<infer P> ? Array<P> : never;
+
+export default class XMLNodeAdapter<T> {
+ /**
+  * @type {string}
+  */
+ private tagName: string;
  /**
   *
   */
- current = {};
+ private current: T;
  /**
   *
-  * @param {*} dirtyNode
   */
- constructor(dirtyNode, tagName){
+ constructor(dirtyNode: T, tagName: string) {
   this.current = dirtyNode;
   this.tagName = tagName;
  }
@@ -16,7 +21,7 @@ export default class XMLNodeAdapter {
   * @param {string} el
   * @returns {this}
   */
- element(el){
+ element(el) {
 
   let current = this.get(el);
 
@@ -33,10 +38,10 @@ export default class XMLNodeAdapter {
   *
   * @returns {object}
   */
- attrs(){
-  try{
+ attrs() {
+  try {
    return this.current.$;
-  }catch(e){
+  } catch (e) {
    console.error(`Can't get attr for ${this.tagName} of ${JSON.stringify(this.current)}`, e);
   }
  }
@@ -44,24 +49,24 @@ export default class XMLNodeAdapter {
   *
   *
   */
- value(){
-  try{
+ value() {
+  try {
    return this.current._
-  }catch(e){
+  } catch (e) {
    console.error(`Can't get value for ${this.tagName} of ${JSON.stringify(this.current)}`, e);
   }
  }
  /**
-  *
+  * 
   */
- get(key, adapt = false){
+ get<T>(key: string | number, adapt = false): typeof adapt extends boolean ? XMLNodeAdapter<T> : T {
   let value = this.current[key];
 
-  if(Array.isArray(value) && value.length === 1){
+  if (Array.isArray(value) && value.length === 1) {
    value = value[0];
   }
 
-  if(adapt){
+  if (adapt) {
    value = new XMLNodeAdapter(value, key);
   }
 
@@ -71,14 +76,14 @@ export default class XMLNodeAdapter {
   *
   * @param {int} index
   */
- at(index){
+ at(index: number) {
   return new XMLNodeAdapter(this.current[index], this.tagName);
  }
  /**
   *
   * @throws {Error}
   */
- validateCurrentAsArray(){
+ validateCurrentAsArray() {
   if (!Array.isArray(this.current)) {
    throw new Error(`${this.tagName} is not array of element`);
   }
@@ -88,7 +93,7 @@ export default class XMLNodeAdapter {
   * @param {function<void>} cb
   * @returns {}
   */
- forEach(cb){
+ forEach(cb) {
   this.validateCurrentAsArray();
   this.current.forEach((dirtyNode, ...args) => {
    cb(new XMLNodeAdapter(dirtyNode, this.tagName), ...args);
@@ -101,7 +106,7 @@ export default class XMLNodeAdapter {
   * @param {function<any>} cb
   * @returns {array}
   */
- map(cb){
+ map(cb) {
   this.validateCurrentAsArray();
   return this.current.map((dirtyNode, ...args) => {
    return cb(new XMLNodeAdapter(dirtyNode, this.tagName), ...args);
@@ -111,12 +116,12 @@ export default class XMLNodeAdapter {
   *
   * @returns
   */
- toObject(){
+ toObject() {
 
   const reducer = (todo, [key, value]) => {
-   if(Array.isArray(value) && value.length === 1){
+   if (Array.isArray(value) && value.length === 1) {
     value = value[0];
-   } else if(typeof value === "object"){
+   } else if (typeof value === "object") {
     value = _(value);
    }
 

@@ -1,6 +1,7 @@
 import JokeApiService from "./JokeApiService";
 import NewsApiService from "./NewsApiService";
 import RecordService from "./RecordService";
+import MentionService from "./mention-service";
 /**
  * @typedef {Object} Service
  * @property {() => void} init
@@ -28,7 +29,8 @@ export default class Services {
   this.services.push(
    new JokeApiService(...args),
    new NewsApiService(...args),
-   new RecordService(...args)
+   new RecordService(...args),
+   new MentionService(...args),
   );
  }
 
