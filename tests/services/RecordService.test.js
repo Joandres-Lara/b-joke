@@ -15,6 +15,7 @@ describe("new RecordService", () => {
   instanceRecordService = new RecordService(new Eris.CommandClient(), null, {get: () => storage});
   instanceRecordService.init();
  });
+ 
  test("Append action job", () => {
 
  });

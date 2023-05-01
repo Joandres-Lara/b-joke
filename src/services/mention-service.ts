@@ -1,21 +1,34 @@
+import Message from "@app/Messages/Message";
 import ServiceBot from "./ServiceBot"
+import Resolver from "@app/resolver";
 
 export default class MentionService extends ServiceBot {
  /**
   * 
   */
- constructor(bot, appExpress, storageManager) {
-  super(bot, appExpress, storageManager);
- }
- /**
-  * 
-  */
  public init() {
-  this.bot.on("messageCreate", message => {
-   if (message.mentions.some((mention) => {
-    return mention.id == "869016500135137320";
-   })) {
-    this.sendMessage(message.channel.id, "¿Qué pajoooooooo?");
+  this.bot.on("messageCreate", async message => {
+   const logger = Resolver.get("logger");
+   const hasMention = message.mentions?.some((mention) => mention.id == process.env.BOT_GUID);
+   const context = Resolver.get("context");
+
+   if (!context) {
+    logger?.warn("Context not found");
+    return;
+   }
+
+   const botSession = Resolver.get("bot_session");
+
+   if (!botSession) {
+    logger?.warn("Bot session is not found");
+    return;
+   }
+
+   if (hasMention) {
+    const answer = await context.request(message.content, botSession);
+    this.sendMessage(message.channel.id, answer);
+   } else {
+    botSession.pushUserMessage(new Message(message.content));
    }
   })
  }

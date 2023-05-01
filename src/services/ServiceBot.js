@@ -1,6 +1,7 @@
 import Logger from "@app/Logger";
 import Message from "../app/Messages/Message";
 import MiddlewareAttemptRequestsBot from "./middlewares/MiddlewareAttemptRequestsBot";
+import Resolver from "@app/resolver/resolver";
 
 export default class ServiceBot {
  /** @type {import("eris").CommandClient} */
@@ -15,14 +16,15 @@ export default class ServiceBot {
  logger;
  /**
   *
-  * @param {import("eris").Client} bot
-  * @param {import("express").Application} appExpress
-  * @param {import("@app/Storages/PostgresStorageManager").default} storageManager
+  * @param {import("eris").Client} [bot]
+  * @param {import("express").Application} [appExpress]
+  * @param {import("@app/Storages/PostgresStorageManager").default} [storageManager]
   */
  constructor(bot, appExpress, storageManager) {
-  this.bot = bot;
-  this.appExpress = appExpress;
-  this.storageManager = storageManager;
+  // TODO: Posible deprecation arguments in constructor
+  this.bot = bot || Resolver.get("bot");
+  this.appExpress = appExpress || Resolver.get("http");
+  this.storageManager = storageManager || Resolver.get("storage ");
   // Default middlewares
   this.middlewares = [
    new MiddlewareAttemptRequestsBot(bot, appExpress, storageManager),
