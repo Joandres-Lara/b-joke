@@ -15,10 +15,10 @@ interface Instances {
  context?: Context,
  bot_session?: BotInteractionUserSesion,
  storage?: PostgresStorageManager,
- logger: Logger
+ logger?: Logger
 };
 
-export default class Resolver {
+export default abstract class Resolver {
  /**
   * 
   */
@@ -37,12 +37,5 @@ export default class Resolver {
   */
  public static set<K extends keyof Instances, P extends Instances[K]>(key: K, instance: P): void {
   Resolver.instances[key] = instance;
- }
- /**
-  * 
-  * @param instances 
-  */
- public constructor(instances: Instances) {
-  Resolver.instances = instances;
  }
 }
