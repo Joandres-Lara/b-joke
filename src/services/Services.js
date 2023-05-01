@@ -4,17 +4,17 @@ import RecordService from "./RecordService";
 import MentionService from "./mention-service";
 /**
  * @typedef {Object} Service
- * @property {() => void} init
+ * @property {() => Promise<void>} init
  * @property {(logger: import("@app/Logger").default) => this} useLogger
  */
 export default class Services {
  /**
   *
   * @param {*} bot
-  * @returns {Services}
+  * @returns {Promise<Services>}
   */
- static async configure(...args) {
-  await new Services(...args).init();
+ static async configure(...args) { 
+  return await new Services(...args).init();
  }
  /**
   *
@@ -35,11 +35,13 @@ export default class Services {
  }
 
  async init() {
-  return Promise.all(
+  await Promise.all(
    this.services.map(async (service) => {
     service.useLogger();
     await service.init();
    })
   );
+
+  return this;
  }
 }

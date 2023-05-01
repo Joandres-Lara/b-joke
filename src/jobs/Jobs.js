@@ -5,7 +5,7 @@ import ManualJob from "./ManualJob";
 
 export default class Jobs {
  static async configure(...args) {
-  await new Jobs(...args).init();
+  return await new Jobs(...args).init();
  }
 
  jobs = [];
@@ -19,12 +19,14 @@ export default class Jobs {
   );
  }
 
- init() {
-  return Promise.all(
+ async init() {
+  await Promise.all(
    this.jobs.map(async (job) => {
     job.useLogger();
     await job.init();
    })
   );
+
+  return this;
  }
 }
