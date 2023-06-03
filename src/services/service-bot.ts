@@ -1,19 +1,23 @@
 import Logger from "@app/Logger";
 import Message from "../app/Messages/Message";
+import type { Middleware } from "./middlewares/middleware";
 import MiddlewareAttemptRequestsBot from "./middlewares/MiddlewareAttemptRequestsBot";
 import Resolver from "@app/resolver/resolver";
+import Eris from "eris";
+import type PostgresStorageManager from "@app/Storages/PostgresStorageManager";
 
 export default class ServiceBot {
  /** @type {import("eris").CommandClient} */
- bot;
+ bot: Eris.CommandClient;
  /** @type {import("express").Application} */
- appExpress;
+ appExpress: Express.Application;
  /** @type {import("@app/Storages/PostgresStorageManager").default} */
- storageManager;
+ storageManager: PostgresStorageManager;
  /** @type {Middleware[]} */
- middlewares;
+ middlewares: Middleware[];
  /** @type {import("@app/Logger").default} */
- logger;
+ logger?: Logger;
+ resolve : typeof Resolver;
  /**
   *
   * @param {import("eris").Client} [bot]
@@ -24,14 +28,16 @@ export default class ServiceBot {
   // TODO: Posible deprecation arguments in constructor
   this.bot = bot || Resolver.get("bot");
   this.appExpress = appExpress || Resolver.get("http");
-  this.storageManager = storageManager || Resolver.get("storage ");
+  this.storageManager = storageManager || Resolver.get("storage");
+  this.logger = Resolver.get("logger");
+  this.resolve = Resolver;
   // Default middlewares
   this.middlewares = [
    new MiddlewareAttemptRequestsBot(bot, appExpress, storageManager),
   ];
  }
 
- useLogger(logger = new Logger()){
+ useLogger(logger = new Logger()) {
   this.logger = logger;
  }
  /**
@@ -44,8 +50,8 @@ export default class ServiceBot {
   * @param {() => Promise<void>} fnDirty
   * @param  {...any} args
   */
- async applyMiddlewares(fnDirty, ...args){
-  try{
+ async applyMiddlewares(fnDirty, ...args) {
+  try {
    let current_index = -1;
 
    const next = async () => {
@@ -59,7 +65,7 @@ export default class ServiceBot {
    };
 
    await next();
-  }catch(e){
+  } catch (e) {
    this.logger.log(e.toString());
   }
  };
@@ -80,8 +86,8 @@ export default class ServiceBot {
   */
  withMiddlewares =
   (cb, command, description) =>
-  (msg, args) =>
-   this.applyMiddlewares(cb, msg, args, command, description);
+   (msg, args) =>
+    this.applyMiddlewares(cb, msg, args, command, description);
  /**
   *
   * @param {string} command
@@ -101,7 +107,7 @@ export default class ServiceBot {
   * @param {Message|string} message
   */
  sendMessage(channel_id, message) {
-  if(message instanceof Message){
+  if (message instanceof Message) {
    message = message.toObject();
   }
   this.bot.createMessage(channel_id, message);

@@ -4,6 +4,7 @@ FROM mcr.microsoft.com/devcontainers/javascript-node:0-16
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
+# RUN sudo chsh -s /bin/zsh vscode
 RUN npm install pm2 jest -g
 
 # curl -fLSs https://raw.githubusercontent.com/CircleCI-Public/circleci-cli/master/install.sh | sudo bash

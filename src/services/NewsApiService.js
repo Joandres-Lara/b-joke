@@ -1,6 +1,6 @@
 import VoidNewsItemMessage from "../app/Messages/VoidNewsItemMessage";
 import NewsItemMessage from "../app/Messages/NewsItemMessage";
-import ServiceBot from "./ServiceBot";
+import ServiceBot from "./service-bot";
 import NewsApi from "../app/NewsApi/NewsApi";
 import {
  NEWS_COMMAND,

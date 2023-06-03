@@ -1,5 +1,5 @@
 import Message from "@app/Messages/Message";
-import ServiceBot from "./ServiceBot"
+import ServiceBot from "./service-bot"
 import Resolver from "@app/resolver";
 
 export default class MentionService extends ServiceBot {

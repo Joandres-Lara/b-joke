@@ -1,6 +1,6 @@
 import JokeApiService from "./JokeApiService";
 import NewsApiService from "./NewsApiService";
-import RecordService from "./RecordService";
+import RecordService from "./record-service";
 import MentionService from "./mention-service";
 /**
  * @typedef {Object} Service

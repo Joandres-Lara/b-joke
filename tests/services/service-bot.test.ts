@@ -1,5 +1,5 @@
-import randomNumberBetween from "../../src/app/util/random-number-between";
-import ServiceBot from "../../src/services/ServiceBot";
+import randomNumberBetween from "@app/util/random-number-between";
+import ServiceBot from "@services/service-bot";
 
 let instance_service_bot;
 

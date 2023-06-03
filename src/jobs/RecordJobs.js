@@ -19,7 +19,10 @@ export default class RecordJobs extends BaseJob {
   this.storageJobs.onCreate(this.queue.bind(this));
   this.storageJobs.onCreate(console.log)
  }
-
+ /**
+  * 
+  * @param {*} param0 
+  */
  queue({ config, channel_id, user_id }){
   const { action, cron } = config;
   const [type, cronOrDate] = cron.split(",");

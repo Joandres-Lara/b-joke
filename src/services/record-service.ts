@@ -1,4 +1,4 @@
-import ServiceBot from "./ServiceBot";
+import ServiceBot from "./service-bot";
 import {
  RECORD_COMMAND,
  RECORD_COMMAND_DESCRIPTION,
@@ -9,7 +9,6 @@ import InvalidRecordMessage from "@app/Messages/InvalidRecordMessage";
 import RecordJobSchedule from "@jobs/schedule-types/RecordJobSchedule";
 import CronParser from "@app/Parsers/CronParser";
 import ActionParser from "@app/Parsers/ActionParser";
-import Eris from "eris";
 import RecordSuccesfullyMessage from "@app/Messages/RecordSuccesfullyMessage";
 
 export default class RecordService extends ServiceBot {
@@ -22,17 +21,30 @@ export default class RecordService extends ServiceBot {
  action_parser;
  /**
   *
-  * @param {Eris.CommandClient} bot
-  * @param {Express.Application} appExpress
-  * @param {import("@app/Storages/PostgresStorageManager").default} storageManager
   */
- constructor(bot, appExpress, storageManager) {
-  super(bot, appExpress, storageManager);
-  this.storageJobs = storageManager.get("jobs");
-  this.cron_parser = new CronParser();
-  this.action_parser = new ActionParser();
+ constructor(...args: any[]) {
+  super(...args);
+  this.storageJobs = this.resolve.get("storage")?.get("jobs");
+  // this.cron_parser = new CronParser();
+  // this.action_parser = new ActionParser();
  }
-
+ /**
+  * 
+  * @param cron_parser 
+  */
+ setCronParser(cron_parser: CronParser){
+  this.cron_parser = cron_parser
+ }
+ /**
+  * 
+  * @param action_parser 
+  */
+ setActionParser(action_parser: ActionParser){
+  this.action_parser = action_parser;
+ }
+ /**
+  * 
+  */
  init() {
   this.registerCommand(
    RECORD_COMMAND,
@@ -49,7 +61,7 @@ export default class RecordService extends ServiceBot {
      if (this.cron_parser.hasError()) {
       this.sendMessage(
        channel_id,
-       new ErrorCronParseMessage(this.cron_parser.getError())
+       new ErrorCronParseMessage(this.cron_parser.hasError())
       );
       this.cron_parser.resetError();
       return;

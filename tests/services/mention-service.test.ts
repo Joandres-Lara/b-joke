@@ -28,9 +28,7 @@ describe("Service MentionService", () => {
 
  test("should save last message interaction", () => {
   const bot = Resolver.get("bot");
-  const mockedRequest = jest.fn(async (question, session) => {
-
-  });
+  const mockedRequest = jest.fn();
 
   Resolver.set("context", {
    request: mockedRequest,
@@ -57,5 +55,55 @@ describe("Service MentionService", () => {
   })
 
   expect(mockedRequest).toHaveBeenCalled();
+ });
+
+ test("should return and log if context not found", () => {
+  const bot = Resolver.get("bot");
+  Resolver.set("context", undefined);
+  const spierSendMessage = jest.spyOn(mentionService, "sendMessage");
+
+  bot?.dispatchEvent("messageCreate", {
+   content: "Hola",
+   mentions: [{
+    id: process.env.BOT_GUID
+   }],
+   channel: {
+    id: "99"
+   }
+  });
+
+  expect(spierSendMessage).not.toHaveBeenCalled();
+ });
+
+ test("should only push message user if not mentioned", () => {
+  const bot = Resolver.get("bot");
+  const mockedRequest = jest.fn();
+
+  Resolver.set("context", {
+   request: mockedRequest,
+  });
+
+  const mockPushBotMessage = jest.fn();
+  const mockPushUserMessage = jest.fn();
+  // @ts-ignore
+  Resolver.set("bot_session", {
+   pushBotMessage: mockPushBotMessage,
+   pushUserMessage: mockPushUserMessage,
+   getMessages: () => new Set(),
+   messages: new Set()
+  });
+
+  bot?.dispatchEvent("messageCreate", {
+   content: "Hello world",
+   mentions: [{
+    id: 987982734
+   }],
+   channel: {
+    id: "89"
+   }
+  })
+
+  expect(mockedRequest).not.toHaveBeenCalled();
+  expect(mockPushUserMessage).toHaveBeenCalled();
  });
 });

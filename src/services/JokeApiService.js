@@ -1,7 +1,7 @@
 import JokeApiJobSchedule from "@jobs/schedule-types/JokeApiJobSchedule";
 import JokeStatusMessage from "@app/Messages/JokeStatusMessage";
 import JokeMessage from "../app/Messages/JokeMessage";
-import ServiceBot from "./ServiceBot";
+import ServiceBot from "./service-bot";
 import JokeApi from "../app/JokeApi";
 
 import {
