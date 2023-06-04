@@ -1,4 +1,6 @@
-export default class DefaultStorage {
+import BaseStorage from "./base-storage";
+
+export default class DefaultStorage extends BaseStorage {
  /**
   *
   * @param {object} internalConfig
@@ -26,10 +28,6 @@ export default class DefaultStorage {
   * @var {Array} arr
   */
  arr = [];
- /**
-  *
-  */
- constructor() {}
  /**
   * Encuentra todos los elementos que coinciden con todos los elementos del objeto en `config`.
   *

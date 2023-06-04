@@ -14,6 +14,7 @@ import PostgresStorageManager from "@app/Storages/PostgresStorageManager";
 import InvalidRecordMessage from "@app/Messages/InvalidRecordMessage";
 import RecordSuccesfully from "@app/Messages/RecordSuccesfullyMessage";
 import wait from "@app/util/wait";
+import RecordJobSchedule from "@jobs/schedule-types/RecordJobSchedule";
 
 jest.mock("@app/Parsers/ActionParser");
 jest.mock("@app/Parsers/CronParser");
@@ -134,6 +135,8 @@ describe("new RecordService", () => {
    resetError: jest.fn()
   }));
 
+  const spierInsert = jest.spyOn(storage, "insert");
+
   const action_parser = new ActionParser();
   const cron_parser = new CronParser();
 
@@ -144,7 +147,11 @@ describe("new RecordService", () => {
 
   await wait(1);
 
-  expect(spierSendMessage).toHaveBeenCalledTimes(1);
+  expect(spierInsert).toHaveBeenCalledTimes(1);
+  expect(spierInsert).toHaveBeenCalledWith(
+   expect.any(RecordJobSchedule)
+  );
+  expect(spierSendMessage).toHaveBeenCalledTimes(1);  
   expect(spierSendMessage).toHaveBeenCalledWith(createMessageMock.channelId, expect.any(RecordSuccesfully))
  });
 });

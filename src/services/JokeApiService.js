@@ -3,6 +3,7 @@ import JokeStatusMessage from "@app/Messages/JokeStatusMessage";
 import JokeMessage from "../app/Messages/JokeMessage";
 import ServiceBot from "./service-bot";
 import JokeApi from "../app/JokeApi";
+import Resolver from "@app/resolver/resolver";
 
 import {
  JOKE_COMMAND,
@@ -22,7 +23,7 @@ export default class JokeApiService extends ServiceBot {
   */
  constructor(bot, appExpress, storageManager) {
   super(bot, appExpress, storageManager);
-  this.storageJobs = storageManager.get("jobs");
+  this.storageJobs = storageManager.get("jobs") || Resolver.get("storage");
   this.api = new JokeApi();
  }
  /**

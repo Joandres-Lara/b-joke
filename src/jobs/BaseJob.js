@@ -3,6 +3,7 @@ import Message from "@app/Messages/Message";
 import randomNumberBetween from "@app/util/random-number-between";
 import nodeSchedule, { RecurrenceRule } from "node-schedule";
 import { addDays } from "date-fns";
+import Resolver from "@app/resolver/resolver";
 
 export default class BaseJob {
  /** @type {import("eris").CommandClient} */
@@ -32,9 +33,12 @@ export default class BaseJob {
   * @param {import("@app/Storages/PostgresStorageManager").default}
   */
  constructor(bot, appExpress, storageManager) {
-  this.bot = bot;
-  this.appExpress = appExpress;
-  this.storageJobs = storageManager.get("jobs");
+  this.bot = bot || Resolver.get("bot");
+  this.appExpress = appExpress || Resolver.get("http");
+  this.storageManager = storageManager || Resolver.get("storage");
+  this.storageJobs = this.storageManager.get("jobs");
+  this.logger = Resolver.get("logger");
+  this.resolver = Resolver;
  }
  /**
   *

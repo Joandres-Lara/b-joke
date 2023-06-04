@@ -17,23 +17,21 @@ export default class RecordJobs extends BaseJob {
   const jobs = await this.getAllJobs();
   jobs.forEach(this.queue.bind(this));
   this.storageJobs.onCreate(this.queue.bind(this));
-  this.storageJobs.onCreate(console.log)
+  this.storageJobs.onCreate(console.log);
  }
  /**
   * 
   * @param {*} param0 
   */
- queue({ config, channel_id, user_id }){
+ queue({ config, channel_id, user_id }) {
   const { action, cron } = config;
   const [type, cronOrDate] = cron.split(",");
   this.logger.info(type, cronOrDate);
+
   if (type === "[date-unique]") {
-   this.schedule(new Date(cronOrDate), () => {
-    this.bot.createMessage(
-     channel_id,
-     new RecordActionMessage(action, user_id).toObject()
-    );
-   });
+   this.schedule(new Date(cronOrDate), () =>
+    this.sendMessage(channel_id, new RecordActionMessage(action, user_id))
+   );
   }
  }
  /**

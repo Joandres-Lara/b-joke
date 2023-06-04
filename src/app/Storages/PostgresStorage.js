@@ -1,14 +1,7 @@
 import PostgresSequelize from "../PostgresSequelize";
+import BaseStorage from "./base-storage";
 
-/**
- * @typedef {(model: import("sequelize").Model) => any} CallbackCreate
- */
-
-export default class PostgresStorage {
- /**
-  *  @type {CallbackCreate[]}
-  */
- #listeners_create = [];
+export default class PostgresStorage extends BaseStorage {
  /**
   *
   * @returns {void}
@@ -30,22 +23,5 @@ export default class PostgresStorage {
  async createORM() {
   this.orm = new PostgresSequelize();
   return await this.orm.connect();
- }
- /**
-  * @param {CallbackCreate} cb
-  */
- onCreate(cb) {
-  if (!this.#listeners_create.includes(cb)) {
-   this.#listeners_create.push(cb);
-  }
- }
- /**
-  *
-  * @param {import("sequelize").Model} model_created
-  */
- dispatchOnCreate(model_created) {
-  for (let listener of this.#listeners_create) {
-   listener(model_created);
-  }
  }
 }
