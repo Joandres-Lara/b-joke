@@ -53,6 +53,7 @@ export default class DefaultStorage extends BaseStorage {
   */
  insert(values) {
   this.arr.push(values);
+  this.dispatchOnCreate(values);
   return Promise.resolve(values);
  }
  /**

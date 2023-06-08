@@ -1,4 +1,5 @@
 import { Configuration, OpenAIApi } from "openai";
+import Resolver from "@app/resolver/resolver";
 
 type MessagesHistory = ({
  role: "user",
@@ -30,7 +31,7 @@ export default class ChatGPT {
  }
  /**
   * 
-  * @param {string} message
+  * @param {string} m\
   * @returns {Promise<void>}
   */
  public async chatRequest(message: string) {
@@ -43,16 +44,21 @@ export default class ChatGPT {
  }
  /**
   * 
+  * @return {string}
   */
  public async chatRequestWithRole(messages: MessagesHistory) {
+  try {
+   const completion = await this.instance.createChatCompletion({
+    model: ChatGPT.DEFAULT_MODEL,
+    messages: messages
+   });
 
-  const completion = await this.instance.createChatCompletion({
-   model: ChatGPT.DEFAULT_MODEL,
-   messages: messages
-  });
+   const content = completion.data.choices[0].message?.content || "";
 
-  const content = completion.data.choices[0].message?.content || "";
-
-  return content;
+   return content;
+  } catch (e) {
+   Resolver.get("logger")?.warn(e as string);
+   return null;
+  }
  }
 }
