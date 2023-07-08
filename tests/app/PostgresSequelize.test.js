@@ -1,51 +1,64 @@
-import PostgresSequelize from "../../src/app/PostgresSequelize";
+import PostgresSequelize from "@app/PostgresSequelize";
 import sequelize from "sequelize";
+import { migrateDb, rollbackDb } from "@util-tests/db-migrations";
 
-it("Should throw when get instance", async () => {
- expect(async () => {
-  await new PostgresSequelize().getInstance();
- }).rejects.toThrowError("Instance is not initialize, call `connect` before get instance");
-});
+describe("singleton instance postgress", () => {
+ beforeAll(async () => {
+  await migrateDb();
+ });
 
-it("Should throw when try connect", async () => {
- jest.spyOn(console, "error");
- jest.spyOn(process, "exit");
- jest.spyOn(sequelize, "Sequelize")
-
- console.error.mockImplementation(() => {});
- process.exit.mockImplementation(() => {});
- sequelize.Sequelize.mockImplementation(() => {
-  return {
-   authenticate: () => { throw new Error("Upsss connect not stablished") }
-  };
+ afterAll(async () => {
+  // await rollbackDb();
  })
 
- await (new PostgresSequelize()).connect();
+ it("Should throw when get instance", async () => {
+  expect(async () => {
+   await new PostgresSequelize().getInstance();
+  }).rejects.toThrowError("Instance is not initialize, call `connect` before get instance");
+ });
 
- expect(sequelize.Sequelize).toHaveBeenCalled();
+ it("Should throw when try connect", async () => {
+  jest.spyOn(console, "error");
+  jest.spyOn(process, "exit");
+  jest.spyOn(sequelize, "Sequelize");
 
- expect(console.error).toHaveBeenCalled();
- expect(process.exit).toHaveBeenCalled();
+  console.error.mockImplementation(() => { });
+  process.exit.mockImplementation(() => { });
+  sequelize.Sequelize.mockImplementation(() => {
+   return {
+    authenticate: () => { throw new Error("Upsss connect not stablished"); }
+   };
+  });
 
- console.error.mockRestore();
- process.exit.mockRestore();
- sequelize.Sequelize.mockRestore();
+  await (new PostgresSequelize()).connect();
+
+  expect(sequelize.Sequelize).toHaveBeenCalled();
+
+  expect(console.error).toHaveBeenCalled();
+  expect(process.exit).toHaveBeenCalled();
+
+  console.error.mockRestore();
+  process.exit.mockRestore();
+  sequelize.Sequelize.mockRestore();
+ });
 });
 
 describe("Operations with connections", () => {
  let instance;
 
- beforeAll(() => {
+ beforeAll(async () => {
+  await migrateDb();
   instance = new PostgresSequelize();
-  return instance.connect();
+  await instance.connect();
  });
 
- beforeEach(() => {
-  return instance.connect();
- })
+ beforeEach(async () => {
+  await instance.connect();
+ });
 
- afterAll(() => {
-  return instance.disconnect();
+ afterAll(async () => {
+  await instance.disconnect();
+  // await rollbackDb();
  });
 
  it("Should connect database and disconnect", async () => {
@@ -67,4 +80,4 @@ describe("Operations with connections", () => {
 
   expect(instance.getModel("ChannelJob")).toBeInstanceOf(Function);
  });
-})
+});

@@ -6,8 +6,8 @@
   "scripts": {
     "install:pm2": "npm install pm2@latest -g",
     "postinstall": "npm run db:migrate",
-    "db:migrate": "npx sequelize-cli db:migrate",
-    "db:migrate-rollback": "npx sequelize-cli db:migrate:undo:all",
+    "db:migrate": "bin/migration-file.bash -c && npx sequelize-cli db:migrate",
+    "db:migrate-rollback": "npx sequelize-cli db:migrate:undo:all && bin/migration-file.bash -r",
     "build": "rm -rf dist && npm install -ED @babel/cli && npx babel src --out-dir dist --extensions '.js,.ts'",
     "start:dev": "npx babel-node --extensions '.ts,.js' -r dotenv/config src/index.js",
     "start:dev:services": "npm run start:dev -- --services",

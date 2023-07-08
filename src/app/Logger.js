@@ -5,7 +5,11 @@ export default class Logger {
  constructor() {
   this.isActivated = !process.argv.includes("--desactive-log");
  }
-
+ /**
+  * 
+  * @param {*} obj 
+  * @returns 
+  */
  object(obj) {
   return inspect(obj, { colors: true, depth: null });
  }

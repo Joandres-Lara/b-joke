@@ -29,13 +29,27 @@ jest.mock("readline", () => {
 });
 
 jest.useFakeTimers("legacy");
+/**
+ * 
+ */
+function resetConsoleMethodMockeds(except = []) {
+ let methodLogs = [
+  "log",
+  "error",
+  "info"
+ ];
+
+ methodLogs.filter((method) => except.includes(method));
+
+ for (const method of methodLogs) {
+  console[method] && console[method].mockRestore && console[method].mockRestore();
+ }
+}
+
 describe("Toggle with heroku cli", () => {
- beforeEach(() => {
-  const spierConsoleLog = jest.spyOn(console, "log");
-  const spierProcessExit = jest.spyOn(process, "exit");
-  // Reset implementation
-  spierProcessExit.mockImplementation(() => {});
-  spierConsoleLog.mockImplementation(() => {});
+
+ afterEach(() => {
+  resetConsoleMethodMockeds();
  });
 
  test("Stop bot if need", async () => {
@@ -121,8 +135,10 @@ describe("Toggle with heroku cli", () => {
 
  test("Throw error when excend limit time response Heroku cli", async () => {
   const spierError = jest.spyOn(console, "error");
-  spierError.mockImplementation(() => {});
-  execMock.mockImplementation(() => {});
+  spierError.mockImplementation(() => { });
+  const spierExit = jest.spyOn(process, "exit");
+  spierExit.mockImplementation(() => {})
+  execMock.mockImplementation(() => { });
 
   const promiseToggle = toggleWithHerokuCli();
   jest.runAllTimers();
@@ -133,5 +149,15 @@ describe("Toggle with heroku cli", () => {
     "La petición ha tardado demasiado, revisa si la aplicación no necesita el token para iniciar sesión"
    )
   );
+
+  expect(spierExit).toHaveBeenCalled();
+ });
+
+ test("should throw error in exec command", async () => {
+  const spierError = jest.spyOn(console, "error");
+  spierError.mockImplementation(() => { });
+  exec.mockImplementation((...[, callback]) => callback(new Error("Upss")));
+  await toggleWithHerokuCli();
+  expect(spierError).toHaveBeenCalledWith(new Error("Upss"));
  });
 });

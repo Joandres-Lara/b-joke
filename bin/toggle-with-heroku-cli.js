@@ -1,4 +1,4 @@
-import { exec as legacyExec } from "child_process";
+import exec from "@app/node-extensions/exec";
 import { endOfMonth, isAfter } from "date-fns";
 import readLine from "readline";
 
@@ -16,14 +16,7 @@ function waitType() {
  });
 }
 
-function exec(command) {
- return new Promise((resolve, reject) => {
-  legacyExec(command, (error, stout) => {
-   if (error) return reject(error);
-   return resolve(stout);
-  });
- });
-}
+
 
 function ms({ years = 0, days = 0, hours = 0, minutes = 0, seconds = 0 }) {
  const transformers = {
