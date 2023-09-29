@@ -6,20 +6,20 @@ import Resolver from "@app/resolver";
 
 export default class ChatGPTContext implements Context {
  /**
-  * 
+  *
   */
  private chat: ChatGPT;
  /**
-  * 
+  *
   */
  constructor() {
   this.chat = new ChatGPT();
  }
  /**
-  * 
-  * @param question 
-  * @param session 
-  * @returns 
+  *
+  * @param question
+  * @param session
+  * @returns
   */
  async request(question: string, session: BotInteractionUserSesion): Promise<Message> {
   const logger = Resolver.get("logger");
@@ -35,7 +35,7 @@ export default class ChatGPTContext implements Context {
 
   if (!answer) {
    logger?.warn("No se pudo obtener una respuesta de Chat-GPT")
-   return new Message("No se encuentra disponible el servicio");
+   return new Message("No se encuentra disponible el servicio de Chat-GPT");
   }
 
   const answerMessage = new Message(answer);

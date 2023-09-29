@@ -8,16 +8,16 @@ type MessagesHistory = ({
 
 export default class ChatGPT {
  /**
-  * 
+  *
   */
- public static readonly DEFAULT_MODEL = "gpt-3.5-turbo";
+ public static readonly DEFAULT_MODEL = process.env.CHAT_GPT_MODEL;
  /**
-  * 
+  *
   * @type {Configuration}
   */
  private configuration: Configuration;
  /**
-  * 
+  *
   * @type
   */
  private instance: OpenAIApi;
@@ -30,7 +30,7 @@ export default class ChatGPT {
   this.instance = new OpenAIApi(this.configuration)
  }
  /**
-  * 
+  *
   * @param {string} m\
   * @returns {Promise<void>}
   */
@@ -43,7 +43,7 @@ export default class ChatGPT {
   return completion.data.choices[0].message?.content || "";
  }
  /**
-  * 
+  *
   * @return {string}
   */
  public async chatRequestWithRole(messages: MessagesHistory) {
