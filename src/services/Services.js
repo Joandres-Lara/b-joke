@@ -13,7 +13,7 @@ export default class Services {
   * @param {*} bot
   * @returns {Promise<Services>}
   */
- static async configure(...args) { 
+ static async configure(...args) {
   return await new Services(...args).init();
  }
  /**

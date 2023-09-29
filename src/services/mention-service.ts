@@ -1,10 +1,11 @@
 import Message from "@app/Messages/Message";
 import ServiceBot from "./service-bot"
 import Resolver from "@app/resolver";
+import ErrorContextRequest from "@app/Messages/error-context-request";
 
 export default class MentionService extends ServiceBot {
  /**
-  * 
+  *
   */
  public init() {
   this.bot.on("messageCreate", async message => {
@@ -25,8 +26,12 @@ export default class MentionService extends ServiceBot {
    }
 
    if (hasMention) {
-    const answer = await context.request(message.content, botSession);
-    this.sendMessage(message.channel.id, answer);
+    try{
+     const answer = await context.request(message.content, botSession);
+     this.sendMessage(message.channel.id, answer);
+    }catch{
+     this.sendMessage(message.channel.id, new ErrorContextRequest());
+    }
    } else {
     botSession.pushUserMessage(new Message(message.content));
    }
